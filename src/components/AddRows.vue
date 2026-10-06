@@ -265,26 +265,17 @@ ul {
   padding: 0;
 }
 
-.search {
-  position: relative;
-}
-
 .search input {
   width: 100%;
 }
 
+/* In the page flow, not a dropdown, so the virtual keyboard cannot cover it. */
 .results {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
   margin-top: 0.25rem;
   padding: 0.25rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 0.4rem;
-  max-height: 50vh;
-  overflow-y: auto;
 }
 
 .result {
@@ -300,9 +291,10 @@ ul {
   display: grid;
   grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.45rem 0.6rem;
-  margin-bottom: 0.3rem;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 0.4rem;
   border: 1px solid var(--border);
   border-radius: 0.4rem;
   background: var(--surface);
@@ -319,8 +311,6 @@ ul {
 }
 
 .option input {
-  width: 1.1rem;
-  height: 1.1rem;
   margin: 0;
 }
 
@@ -340,7 +330,7 @@ ul {
 .filters {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
   margin-top: 0.75rem;
 }
 
@@ -358,7 +348,7 @@ ul {
 
 .sticky {
   position: sticky;
-  bottom: 0;
+  bottom: env(safe-area-inset-bottom);
   padding: 0.75rem 0;
   background: #0b0b0b;
 }

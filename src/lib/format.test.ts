@@ -11,9 +11,9 @@ describe('formatDeparture', () => {
   })
 
   it('shows minutes from 1 to 30, rounded down', () => {
-    expect(formatDeparture(inSeconds(60), now)).toBe('1 min')
-    expect(formatDeparture(inSeconds(5 * 60 + 59), now)).toBe('5 min')
-    expect(formatDeparture(inSeconds(30 * 60 + 59), now)).toBe('30 min')
+    expect(formatDeparture(inSeconds(60), now)).toBe('1 m')
+    expect(formatDeparture(inSeconds(5 * 60 + 59), now)).toBe('5 m')
+    expect(formatDeparture(inSeconds(30 * 60 + 59), now)).toBe('30 m')
   })
 
   it('shows clock time from 31 minutes', () => {

@@ -18,7 +18,7 @@ function confirmImport() {
 </script>
 
 <template>
-  <main class="import">
+  <main class="import form-page">
     <h1>Importer oppsett</h1>
     <template v-if="imported">
       <p>Lenken inneholder disse avgangene:</p>

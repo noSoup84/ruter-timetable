@@ -16,11 +16,11 @@ export function formatClock(time: number): string {
   return clockFormat.format(time)
 }
 
-/** Formats a departure as "nå", "X min" or "HH:MM", relative to now. */
+/** Formats a departure as "nå", "X m" or "HH:MM", relative to now. */
 export function formatDeparture(expected: number, now: number): string {
   const minutes = Math.floor((expected - now) / MINUTE)
   if (minutes < 1) return 'nå'
-  if (minutes <= MINUTES_LIMIT) return `${minutes} min`
+  if (minutes <= MINUTES_LIMIT) return `${minutes} m`
   return formatClock(expected)
 }
 

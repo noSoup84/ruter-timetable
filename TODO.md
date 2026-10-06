@@ -25,3 +25,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Info-boblen skal ha hvit kant. (2026-10-06, 6c42f88)
 - [x] Info-boblen skal lukkes av seg selv etter 10 sekunder uten trykk. (2026-10-06, da7aafd)
 - [x] Info-boblen på nederste rad havnet utenfor skjermen. Rader i nedre halvdel åpner den nå oppover. (2026-10-06, da7aafd)
+- [x] Config-siden skal være tilpasset nettbrett og ha plass til virtuelt tastatur. "Tilbake til avganger" skal være en knapp til venstre. (2026-10-06, COMMIT)
+- [x] "min" skrives som "m", for eksempel "5 m". (2026-10-06, COMMIT)

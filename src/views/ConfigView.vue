@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import AddRows from '../components/AddRows.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
 import { clearConfig, encodeConfig, type BoardRow } from '../lib/config'
 
+const router = useRouter()
 const config = useConfig()
 const adding = ref(false)
 const exportUrl = ref<string | null>(null)
@@ -38,6 +40,16 @@ async function copyExportUrl() {
   copied.value = true
 }
 
+/**
+ * Scrolls a focused text field into view once the virtual keyboard is open.
+ * The search field goes to the top, so its results have room above the keyboard.
+ */
+function revealField(event: FocusEvent) {
+  const field = event.target
+  if (!(field instanceof HTMLInputElement) || field.readOnly || !['text', 'search'].includes(field.type)) return
+  setTimeout(() => field.scrollIntoView({ block: field.type === 'search' ? 'start' : 'center', behavior: 'smooth' }), 300)
+}
+
 function reload() {
   location.reload()
 }
@@ -52,10 +64,10 @@ function reset() {
 </script>
 
 <template>
-  <main class="config">
-    <header>
+  <main class="config form-page" @focusin="revealField">
+    <header class="topbar">
+      <button class="back" @click="router.push('/')">← Avganger</button>
       <h1>Innstillinger</h1>
-      <RouterLink to="/">Tilbake til avganger</RouterLink>
     </header>
 
     <section>
@@ -121,19 +133,26 @@ function reset() {
 
 <style scoped>
 .config {
-  max-width: 44rem;
+  max-width: 56rem;
   margin: 0 auto;
-  padding: 1.5rem 1rem 4rem;
+  /* Room at the bottom, so the last fields can scroll above the virtual keyboard. */
+  padding: 0 1.5rem 50vh;
 }
 
-header {
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 1rem;
+  padding: 1rem 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 h1 {
+  margin: 0;
   font-size: 1.6rem;
 }
 
@@ -144,7 +163,7 @@ h2 {
 
 .hint {
   color: var(--dim);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .rows {
@@ -174,7 +193,11 @@ h2 {
 
 .buttons {
   display: flex;
-  gap: 0.3rem;
+  gap: 0.5rem;
+}
+
+.buttons button {
+  min-width: 3rem;
 }
 
 .inline {

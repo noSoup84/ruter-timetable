@@ -163,7 +163,7 @@ Basert på `expectedDepartureTime` minus nåtid:
 | Tid til avgang | Visning |
 | --- | --- |
 | Under 1 minutt | `nå` |
-| 1 til 30 minutter | `X min` (avrundet ned) |
+| 1 til 30 minutter | `X m` (avrundet ned) |
 | Over 30 minutter | `HH:MM` |
 
 Avganger som har gått, fjernes fra visningen lokalt uten å vente på neste henting.
@@ -194,6 +194,8 @@ Avganger som har gått, fjernes fra visningen lokalt uten å vente på neste hen
 ## Config-side (`/config`)
 
 Config-siden viser de lagrede radene og lar brukeren opprette, endre, slette og flytte dem.
+
+Config-siden er laget for berøring på nettbrett: større tekst, knapper og avkrysningsbokser på minst 48 px, og en fast topprad med knappen "← Avganger" til venstre. Når et tekstfelt får fokus, rulles det fram over det virtuelle tastaturet, og søkefeltet rulles helt til toppen slik at treffene får plass. Søketreffene ligger i selve siden og ikke i en nedtrekksliste, slik at tastaturet ikke dekker dem. Siden har ekstra plass nederst, slik at også de nederste feltene kan rulles over tastaturet.
 
 ### Liste over rader
 
@@ -266,7 +268,7 @@ Ugyldig eller manglende oppsett gir en tom avgangsvisning med en lenke til confi
 
 Enhetstester med Vitest for:
 
-- Tidsformatet (`nå`, `X min`, `HH:MM`, grensene på 1 og 30 minutter).
+- Tidsformatet (`nå`, `X m`, `HH:MM`, grensene på 1 og 30 minutter).
 - Forsinkelse og innstilling.
 - Fjerning av avganger som har gått.
 - Lesing, validering og migrering av oppsett fra `localStorage`.

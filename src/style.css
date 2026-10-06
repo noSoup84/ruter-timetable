@@ -65,3 +65,31 @@ select {
   border-radius: 0.4rem;
   padding: 0.5rem 0.7rem;
 }
+
+/* Pages with forms are used by touch on a tablet: larger text and tap targets. */
+.form-page {
+  font-size: 1.125rem;
+}
+
+.form-page button,
+.form-page input[type='text'],
+.form-page input[type='search'],
+.form-page input[type='time'],
+.form-page select {
+  min-height: 3rem;
+}
+
+.form-page button {
+  padding: 0.6rem 1.1rem;
+}
+
+.form-page input[type='checkbox'] {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Keeps a focused field clear of the sticky header when it is scrolled into view. */
+.form-page input {
+  scroll-margin-top: 6rem;
+}
+
