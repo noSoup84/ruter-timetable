@@ -4,6 +4,7 @@ import DepartureRow from '../components/DepartureRow.vue'
 import { useAutoReload } from '../composables/useAutoReload'
 import { useConfig } from '../composables/useConfig'
 import { useDepartures } from '../composables/useDepartures'
+import { useI18n } from '../composables/useI18n'
 import { useNow } from '../composables/useNow'
 import { formatClock } from '../lib/format'
 
@@ -11,6 +12,7 @@ import { formatClock } from '../lib/format'
 const STALE_AFTER = 120_000
 
 const config = useConfig()
+const { t } = useI18n()
 const rows = computed(() => config.value.rows)
 const now = useNow()
 const { results, lastSuccess } = useDepartures(rows)
@@ -36,8 +38,8 @@ watch(openNotice, restartNoticeTimer)
 
 const stale = computed(() => {
   if (rows.value.length === 0) return null
-  if (lastSuccess.value === null) return now.value - startedAt > STALE_AFTER ? 'Får ikke kontakt med Entur' : null
-  if (now.value - lastSuccess.value > STALE_AFTER) return `Sist oppdatert ${formatClock(lastSuccess.value)}`
+  if (lastSuccess.value === null) return now.value - startedAt > STALE_AFTER ? t('board.noContact') : null
+  if (now.value - lastSuccess.value > STALE_AFTER) return t('board.lastUpdated', { time: formatClock(lastSuccess.value, config.value.clockFormat) })
   return null
 })
 </script>
@@ -45,12 +47,13 @@ const stale = computed(() => {
 <template>
   <main
     class="board"
+    :class="{ 'clock-12h': config.clockFormat === '12h' }"
     :style="{ '--rows': Math.max(rows.length, 3) }"
     @click="openNotice = null"
     @pointerdown.capture="restartNoticeTimer"
   >
     <header class="top">
-      <RouterLink to="/config" class="settings" aria-label="Innstillinger">
+      <RouterLink to="/config" class="settings" :aria-label="t('board.settings')">
         <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.5">
           <circle cx="12" cy="12" r="3" />
           <path
@@ -58,7 +61,7 @@ const stale = computed(() => {
           />
         </svg>
       </RouterLink>
-      <div class="clock">{{ formatClock(now) }}</div>
+      <div class="clock">{{ formatClock(now, config.clockFormat) }}</div>
     </header>
 
     <ul v-if="rows.length" class="rows">
@@ -69,13 +72,14 @@ const stale = computed(() => {
         :result="results.get(row.id)"
         :now="now"
         :minutes-limit="config.minutesLimit"
+        :clock-format="config.clockFormat"
         :notice-open="openNotice === row.id"
         @toggle-notice="toggleNotice(row.id)"
       />
     </ul>
     <p v-else class="empty">
-      Ingen avganger er satt opp.
-      <RouterLink to="/config">Sett opp avganger</RouterLink>
+      {{ t('board.empty') }}
+      <RouterLink to="/config">{{ t('board.setUp') }}</RouterLink>
     </p>
 
     <footer v-if="stale" class="stale">{{ stale }}</footer>
@@ -111,11 +115,22 @@ const stale = computed(() => {
   overflow: hidden;
 }
 
+/* "2:05 PM" is wider than "14:05". */
+.board.clock-12h {
+  --row-width-em: 28;
+}
+
 /* In portrait the times go on their own line, so rows are taller and narrower. */
 @media (orientation: portrait) {
   .board {
     --row-em: 4;
     --row-width-em: 17;
+  }
+}
+
+@media (orientation: portrait) {
+  .board.clock-12h {
+    --row-width-em: 20;
   }
 }
 

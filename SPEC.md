@@ -2,7 +2,7 @@
 
 A minimal web app that shows real-time departures for chosen public transport lines. It runs full screen on a tablet in the hallway, but can be set up for any place in Ruter's area.
 
-The app's interface is in Norwegian. UI text quoted in this document is in Norwegian, with an English translation in parentheses where it helps.
+The app's interface is in Norwegian by default, and can be switched to English (see Language). UI text quoted in this document is the Norwegian text, with the English in parentheses where it helps.
 
 ## Goals
 
@@ -138,12 +138,19 @@ query ($q0: String!, $l0: ID!) {
 
 We fetch 6 departures and show 3, so a row still has 3 departures when the first ones leave between two fetches.
 
+## Language
+
+- The app has Norwegian (default) and English. All UI text is in `src/lib/i18n.ts`, with Norwegian as the source and an English entry for every key. The type check fails if an English text is missing.
+- The language is chosen with two flag buttons (Norway and the United Kingdom) at the top right of the config page, and stored in the config. It also sets the page's `lang` attribute and title.
+- Entur has no global language setting, but service alerts and notices (`summary`, `description`) come in both Norwegian and English. The app keeps both and shows the chosen language, falling back to Norwegian.
+- Stop names and destinations (`frontText`) are only in Norwegian from Entur, and are shown as they are. Row names are created in the language that is active when the row is added ("54 mot Kjelsås" or "54 to Kjelsås"), and are not translated afterwards.
+
 ## Departure board (`/`)
 
 ### Layout
 
 - Dark background with light text. No light mode.
-- Large clock in the top right corner (HH:MM). No date.
+- Large clock in the top right corner, in the chosen time format. No date.
 - One column of rows, in the order the user has set in config.
 - The board fills the whole screen. The font size is the largest that fits both the height (clock and all rows) and the width (badge, name and three times). At least 3 rows are assumed, so a short list doesn't get huge text. The rows share the height that is left.
 - A small, faint gear in the top left corner opens `/config`. It sits at the top so it doesn't get in the way of the times on the bottom row.
@@ -166,9 +173,9 @@ Based on `expectedDepartureTime` minus the current time:
 | --- | --- |
 | Under 1 minute | `nå` (now) |
 | 1 to N minutes | `X m` (rounded down) |
-| Over N minutes | `HH:MM` |
+| Over N minutes | Clock time, `14:05` or `2:05 PM` |
 
-N is `minutesLimit` in config, default 30.
+N is `minutesLimit` in config, default 30. The time format is `clockFormat` in config: 24-hour (default) or 12-hour. The 12-hour format is in English style (`2:05 PM`) for both languages, since Norwegian has no common 12-hour style. It applies to every clock time on the board.
 
 Departures that have left are removed from the board locally, without waiting for the next fetch.
 
@@ -233,7 +240,8 @@ Example: at home near Kværnerbyen you tick 54 from Kværnerbyen and 70 and 34 i
 ### Other settings
 
 - Display and search: how many minutes to departure are shown as "X m" before switching to clock time (1 to 120, default 30), and how far away stops count as nearby (50 to 2000 m, default 250). Invalid values are not saved, and the field goes back to the previous value. If the values are missing from a saved setup, the defaults are used.
-- Automatic reload: on/off and time.
+- Time format: 24-hour (default) or 12-hour.
+- Automatic reload: on/off and time. The time field is the browser's own, so it follows the device's settings, not the time format above.
 - Button "Last inn siden på nytt" (reload page).
 - Button "Tilbakestill alt" (reset everything), with confirmation. It deletes the setup in localStorage, forgets the answer about location and reloads the board. Useful when testing. The location permission the browser has given can't be removed from JavaScript, and must be removed in the browser's settings for the site.
 
@@ -263,7 +271,9 @@ The setup is stored in `localStorage` under one key, with a version number so th
   ],
   "autoReload": { "enabled": true, "time": "04:00" },
   "minutesLimit": 30,
-  "nearbyDistance": 250
+  "nearbyDistance": 250,
+  "language": "no",
+  "clockFormat": "24h"
 }
 ```
 
@@ -283,7 +293,8 @@ The setup can have at most 50 rows, and text fields can be at most 200 character
 
 Unit tests with Vitest for:
 
-- The time format (`nå`, `X m`, `HH:MM`, the limits at 1 minute and `minutesLimit`).
+- The time format (`nå`, `X m`, clock time in 24 and 12 hours, the limits at 1 minute and `minutesLimit`).
+- Translations and the choice of language for text from Entur.
 - Delays and cancellations.
 - Removing departures that have left.
 - Reading, validating and migrating the setup from `localStorage`.

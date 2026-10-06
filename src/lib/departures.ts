@@ -1,5 +1,6 @@
 import type { TransportMode } from './config'
 import type { Departure, LineColours, Notice } from './entur'
+import type { LocalizedText } from './i18n'
 
 export const DEPARTURES_SHOWN = 3
 
@@ -12,14 +13,14 @@ export function upcoming(departures: Departure[], now: number, count = DEPARTURE
 }
 
 /** Returns the first situation text on any of the departures. */
-export function firstSituation(departures: Departure[]): string | null {
+export function firstSituation(departures: Departure[]): LocalizedText | null {
   return departures.find((d) => d.situations.length > 0)?.situations[0] ?? null
 }
 
 /** Returns the general notices on any of the departures, without duplicates. */
 export function notices(departures: Departure[]): Notice[] {
   const unique = new Map<string, Notice>()
-  for (const notice of departures.flatMap((d) => d.notices)) unique.set(notice.summary, notice)
+  for (const notice of departures.flatMap((d) => d.notices)) unique.set(JSON.stringify(notice.summary), notice)
   return [...unique.values()]
 }
 

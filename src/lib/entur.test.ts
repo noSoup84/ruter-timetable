@@ -33,7 +33,7 @@ describe('buildDeparturesQuery', () => {
 })
 
 describe('parseDepartures', () => {
-  it('parses departures, colours and Norwegian incident texts', () => {
+  it('parses departures, colours and incident texts in each language', () => {
     const results = parseDepartures(rows.slice(0, 1), {
       q0: {
         id: 'NSR:Quay:105467',
@@ -65,7 +65,7 @@ describe('parseDepartures', () => {
       l0: { id: 'RUT:Line:54', presentation: { colour: 'E60000', textColour: 'FFFFFF' } },
     })
 
-    // The incident goes under the row in Norwegian, and the general notice goes to the info bubble.
+    // The incident goes under the row and the general notice to the info bubble, both in every language Entur sends.
     expect(results.get('a')).toEqual({
       found: true,
       departures: [
@@ -75,8 +75,10 @@ describe('parseDepartures', () => {
           realtime: true,
           cancelled: false,
           destination: 'Kjelsås stasjon',
-          situations: ['Buss 54 har omkjøring'],
-          notices: [{ summary: 'Fra 4. oktober: Buss 54 får økt frekvens', description: 'Bussen går hvert 10. minutt.' }],
+          situations: [{ no: 'Buss 54 har omkjøring', en: 'Bus 54 is diverted' }],
+          notices: [
+            { summary: { no: 'Fra 4. oktober: Buss 54 får økt frekvens' }, description: { no: 'Bussen går hvert 10. minutt.' } },
+          ],
         },
       ],
       colours: { colour: 'E60000', textColour: 'FFFFFF' },

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useConfig } from '../composables/useConfig'
+import { useI18n } from '../composables/useI18n'
 import { usePosition } from '../composables/usePosition'
 import { MAX_ROWS, type BoardRow, type TransportMode } from '../lib/config'
 import {
@@ -18,13 +19,8 @@ const emit = defineEmits<{ add: [rows: BoardRow[]]; cancel: [] }>()
 /** How many of the nearest stops to show directions for. */
 const NEARBY_STOPS = 10
 
-const MODE_LABELS: Record<TransportMode, string> = {
-  bus: 'Buss',
-  metro: 'T-bane',
-  tram: 'Trikk',
-  rail: 'Tog',
-  water: 'Ferje',
-}
+/** Transport modes in the order the filter buttons show them. */
+const MODES: TransportMode[] = ['bus', 'metro', 'tram', 'rail', 'water']
 
 interface StopGroup {
   stop: StopOption
@@ -32,6 +28,7 @@ interface StopGroup {
 }
 
 const config = useConfig()
+const { t } = useI18n()
 const position = usePosition()
 const asking = ref(false)
 const loading = ref(false)
@@ -66,9 +63,9 @@ async function loadNearby() {
     groups.value = stops
       .map((stop) => ({ stop, directions: directions.get(stop.id) ?? [] }))
       .filter((g) => g.directions.length > 0)
-    if (groups.value.length === 0) error.value = `Fant ingen avganger innen ${distance} m. Søk etter holdeplassen i stedet.`
+    if (groups.value.length === 0) error.value = t('add.noneNearby', { distance })
   } catch {
-    error.value = 'Fant ikke posisjonen din. Søk etter holdeplassen i stedet.'
+    error.value = t('add.noPosition')
   } finally {
     loading.value = false
   }
@@ -94,7 +91,7 @@ watch(query, (text) => {
     try {
       results.value = await searchStops(text.trim(), searchController.signal)
     } catch (e) {
-      if ((e as Error).name !== 'AbortError') error.value = 'Søket feilet. Prøv igjen.'
+      if ((e as Error).name !== 'AbortError') error.value = t('add.searchFailed')
     }
   }, 250)
 })
@@ -111,10 +108,10 @@ async function addStop(stop: StopOption) {
   error.value = null
   try {
     const directions = (await fetchDirections([stop.id])).get(stop.id) ?? []
-    if (directions.length === 0) error.value = `Ingen avganger fra ${stop.name} den neste uka.`
+    if (directions.length === 0) error.value = t('add.noneFromStop', { stop: stop.name })
     else groups.value = [{ stop, directions }, ...groups.value]
   } catch {
-    error.value = 'Klarte ikke å hente linjer. Prøv igjen.'
+    error.value = t('add.linesFailed')
   } finally {
     loading.value = false
   }
@@ -122,7 +119,7 @@ async function addStop(stop: StopOption) {
 
 const modes = computed(() => {
   const present = new Set(groups.value.flatMap((g) => g.directions.map((d) => d.transportMode)))
-  return (Object.keys(MODE_LABELS) as TransportMode[]).filter((mode) => present.has(mode))
+  return MODES.filter((mode) => present.has(mode))
 })
 
 const visibleGroups = computed(() =>
@@ -146,7 +143,7 @@ function toggle(stop: StopOption, direction: DirectionOption) {
 function save() {
   const rows: BoardRow[] = [...selected.value.values()].map(({ stop, direction }) => ({
     id: crypto.randomUUID(),
-    name: `${direction.publicCode} mot ${direction.destinations[0] ?? stop.name}`,
+    name: t('row.defaultName', { line: direction.publicCode, destination: direction.destinations[0] ?? stop.name }),
     transportMode: direction.transportMode,
     lineId: direction.lineId,
     publicCode: direction.publicCode,
@@ -164,20 +161,20 @@ function formatDistance(meters: number): string {
 <template>
   <section class="add">
     <template v-if="asking">
-      <h3>Vil du se avganger i nærheten?</h3>
-      <p class="hint">Posisjonen brukes bare til å finne holdeplasser, og lagres ikke.</p>
+      <h3>{{ t('add.askPosition') }}</h3>
+      <p class="hint">{{ t('add.positionHint') }}</p>
       <div class="actions">
-        <button class="primary" @click="loadNearby">Bruk posisjonen min</button>
-        <button @click="skipPosition">Søk i stedet</button>
-        <button class="link" @click="emit('cancel')">Avbryt</button>
+        <button class="primary" @click="loadNearby">{{ t('add.usePosition') }}</button>
+        <button @click="skipPosition">{{ t('add.searchInstead') }}</button>
+        <button class="link" @click="emit('cancel')">{{ t('add.cancel') }}</button>
       </div>
     </template>
 
     <template v-else>
-      <h3>Velg avganger</h3>
+      <h3>{{ t('add.title') }}</h3>
 
       <div class="search">
-        <input v-model="query" type="search" placeholder="Søk etter holdeplass" />
+        <input v-model="query" type="search" :placeholder="t('add.searchPlaceholder')" />
         <ul v-if="results.length" class="results">
           <li v-for="stop in results" :key="stop.id">
             <button class="result" @click="addStop(stop)">
@@ -189,18 +186,18 @@ function formatDistance(meters: number): string {
       </div>
 
       <div v-if="modes.length > 1" class="filters">
-        <button :class="{ active: modeFilter === null }" @click="modeFilter = null">Alle</button>
+        <button :class="{ active: modeFilter === null }" @click="modeFilter = null">{{ t('add.all') }}</button>
         <button
           v-for="mode in modes"
           :key="mode"
           :class="{ active: modeFilter === mode }"
           @click="modeFilter = mode"
         >
-          {{ MODE_LABELS[mode] }}
+          {{ t(`mode.${mode}`) }}
         </button>
       </div>
 
-      <p v-if="loading" class="hint">Henter avganger...</p>
+      <p v-if="loading" class="hint">{{ t('add.loading') }}</p>
       <p v-if="error" class="error">{{ error }}</p>
 
       <div class="groups">
@@ -223,9 +220,9 @@ function formatDistance(meters: number): string {
                   :public-code="direction.publicCode"
                   :colours="direction.colours"
                 />
-                <span class="destination">mot {{ direction.destinations.join(', ') }}</span>
+                <span class="destination">{{ t('add.to', { destinations: direction.destinations.join(', ') }) }}</span>
                 <span class="meta">
-                  {{ existingKeys.has(keyOf(direction)) ? 'Lagt til' : direction.quayCode ? `Plattform ${direction.quayCode}` : '' }}
+                  {{ existingKeys.has(keyOf(direction)) ? t('add.added') : direction.quayCode ? t('add.platform', { code: direction.quayCode }) : '' }}
                 </span>
               </label>
             </li>
@@ -235,9 +232,9 @@ function formatDistance(meters: number): string {
 
       <div class="actions sticky">
         <button class="primary" :disabled="selected.size === 0" @click="save">
-          {{ selected.size === 1 ? 'Legg til 1 avgang' : `Legg til ${selected.size} avganger` }}
+          {{ selected.size === 1 ? t('add.addOne') : t('add.addMany', { count: selected.size }) }}
         </button>
-        <button class="link" @click="emit('cancel')">Avbryt</button>
+        <button class="link" @click="emit('cancel')">{{ t('add.cancel') }}</button>
       </div>
     </template>
   </section>

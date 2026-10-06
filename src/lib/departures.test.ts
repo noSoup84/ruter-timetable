@@ -31,15 +31,15 @@ describe('upcoming', () => {
 
 describe('firstSituation', () => {
   it('returns the first situation on any departure', () => {
-    expect(firstSituation([departure(1), departure(2, { situations: ['Buss for trikk'] })])).toBe('Buss for trikk')
+    expect(firstSituation([departure(1), departure(2, { situations: [{ no: 'Buss for trikk' }] })])).toEqual({ no: 'Buss for trikk' })
     expect(firstSituation([departure(1)])).toBeNull()
   })
 })
 
 describe('notices', () => {
   it('collects notices from all departures without duplicates', () => {
-    const frequency = { summary: 'Buss 54 får økt frekvens', description: 'Fra 4. oktober' }
-    const minutes = { summary: 'Minuttjusteringer', description: null }
+    const frequency = { summary: { no: 'Buss 54 får økt frekvens' }, description: { no: 'Fra 4. oktober' } }
+    const minutes = { summary: { no: 'Minuttjusteringer' }, description: null }
     const list = [departure(1, { notices: [frequency] }), departure(2, { notices: [frequency, minutes] })]
     expect(notices(list)).toEqual([frequency, minutes])
   })

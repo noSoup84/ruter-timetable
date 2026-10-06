@@ -1,3 +1,6 @@
+import { CLOCK_FORMATS, type ClockFormat } from './format'
+import { DEFAULT_LANGUAGE, isLanguage, type Language } from './i18n'
+
 export type TransportMode = 'bus' | 'tram' | 'metro' | 'rail' | 'water'
 
 export interface BoardRow {
@@ -18,6 +21,9 @@ export interface AppConfig {
   minutesLimit: number
   /** How far away, in meters, stops count as nearby when adding departures. */
   nearbyDistance: number
+  /** Language of the app's own text. Text from Entur follows it where Entur has a translation. */
+  language: Language
+  clockFormat: ClockFormat
 }
 
 /** Allowed ranges for the number settings. */
@@ -44,6 +50,8 @@ export function defaultConfig(): AppConfig {
     autoReload: { enabled: true, time: '04:00' },
     minutesLimit: 30,
     nearbyDistance: 250,
+    language: DEFAULT_LANGUAGE,
+    clockFormat: '24h',
   }
 }
 
@@ -97,6 +105,10 @@ export function parseConfig(value: unknown): AppConfig | null {
     autoReload: { enabled, time },
     minutesLimit: validSetting('minutesLimit', value.minutesLimit) ?? defaultSettings.minutesLimit,
     nearbyDistance: validSetting('nearbyDistance', value.nearbyDistance) ?? defaultSettings.nearbyDistance,
+    language: isLanguage(value.language) ? value.language : defaultSettings.language,
+    clockFormat: CLOCK_FORMATS.includes(value.clockFormat as ClockFormat)
+      ? (value.clockFormat as ClockFormat)
+      : defaultSettings.clockFormat,
   }
 }
 

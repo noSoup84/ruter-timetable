@@ -44,6 +44,8 @@ const config: AppConfig = {
   autoReload: { enabled: false, time: '03:30' },
   minutesLimit: 15,
   nearbyDistance: 500,
+  language: 'en',
+  clockFormat: '12h',
 }
 
 describe('parseConfig', () => {
@@ -80,6 +82,12 @@ describe('number settings', () => {
     const parsed = parseConfig({ version: 1, rows: [] })
     expect(parsed?.minutesLimit).toBe(30)
     expect(parsed?.nearbyDistance).toBe(250)
+    expect(parsed?.language).toBe('no')
+    expect(parsed?.clockFormat).toBe('24h')
+  })
+
+  it('falls back to Norwegian for an unknown language', () => {
+    expect(parseConfig({ version: 1, rows: [], language: 'sv' })?.language).toBe('no')
   })
 
   it('uses defaults for values outside the limits or not whole numbers', () => {

@@ -2,12 +2,16 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import AddRows from '../components/AddRows.vue'
+import LanguageSelector from '../components/LanguageSelector.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
+import { useI18n } from '../composables/useI18n'
+import { CLOCK_FORMATS } from '../lib/format'
 import { LIMITS, MAX_ROWS, MAX_TEXT_LENGTH, clearConfig, encodeConfig, validSetting, type BoardRow } from '../lib/config'
 
 const router = useRouter()
 const config = useConfig()
+const { t } = useI18n()
 const adding = ref(false)
 const exportUrl = ref<string | null>(null)
 const copied = ref(false)
@@ -66,7 +70,7 @@ function endDrag() {
 }
 
 function remove(row: BoardRow) {
-  if (!confirm(`Slette "${row.name}"?`)) return
+  if (!confirm(t('config.confirmDelete', { name: row.name }))) return
   config.value.rows = config.value.rows.filter((r) => r.id !== row.id)
 }
 
@@ -105,7 +109,7 @@ function reload() {
 }
 
 function reset() {
-  if (!confirm('Slette alle avganger og innstillinger på denne enheten?')) return
+  if (!confirm(t('config.confirmReset'))) return
   clearConfig()
   // A full reload also forgets the position choice, which is only kept in memory.
   location.replace(`${location.pathname}#/`)
@@ -116,13 +120,14 @@ function reset() {
 <template>
   <main class="config form-page" @focusin="revealField">
     <header class="topbar">
-      <button class="back" @click="router.push('/')">← Avganger</button>
-      <h1>Innstillinger</h1>
+      <button class="back" @click="router.push('/')">{{ t('config.back') }}</button>
+      <h1>{{ t('config.title') }}</h1>
+      <LanguageSelector class="language-selector" />
     </header>
 
     <section>
-      <h2>Avganger</h2>
-      <p v-if="config.rows.length === 0" class="hint">Ingen avganger er lagt til ennå.</p>
+      <h2>{{ t('config.departures') }}</h2>
+      <p v-if="config.rows.length === 0" class="hint">{{ t('config.noRows') }}</p>
       <TransitionGroup tag="ul" name="reorder" class="rows">
         <li
           v-for="row in config.rows"
@@ -133,7 +138,7 @@ function reset() {
         >
           <button
             class="handle"
-            aria-label="Dra for å flytte"
+            :aria-label="t('config.dragHandle')"
             @pointerdown="startDrag($event, row)"
             @pointermove="drag"
             @pointerup="endDrag"
@@ -150,22 +155,22 @@ function reset() {
           </button>
           <LineBadge :mode="row.transportMode" :public-code="row.publicCode" :colours="null" />
           <div class="details">
-            <input v-model="row.name" type="text" :maxlength="MAX_TEXT_LENGTH" aria-label="Navn" />
-            <span class="hint">Fra {{ row.stopName }}</span>
+            <input v-model="row.name" type="text" :maxlength="MAX_TEXT_LENGTH" :aria-label="t('config.name')" />
+            <span class="hint">{{ t('config.from', { stop: row.stopName }) }}</span>
           </div>
-          <button aria-label="Slett" @click="remove(row)">Slett</button>
+          <button @click="remove(row)">{{ t('config.delete') }}</button>
         </li>
       </TransitionGroup>
       <AddRows v-if="adding" :existing="config.rows" @add="add" @cancel="adding = false" />
-      <p v-else-if="config.rows.length >= MAX_ROWS" class="hint">Du har nådd grensen på {{ MAX_ROWS }} avganger.</p>
-      <button v-else class="primary" @click="adding = true">Legg til avganger</button>
+      <p v-else-if="config.rows.length >= MAX_ROWS" class="hint">{{ t('config.maxRows', { max: MAX_ROWS }) }}</p>
+      <button v-else class="primary" @click="adding = true">{{ t('config.addDepartures') }}</button>
     </section>
 
     <section>
-      <h2>Visning og søk</h2>
+      <h2>{{ t('config.display') }}</h2>
       <div class="settings">
         <label class="setting">
-          <span>Vis minutter til avgang opp til</span>
+          <span>{{ t('config.minutesBefore') }}</span>
           <input
             type="number"
             inputmode="numeric"
@@ -174,10 +179,10 @@ function reset() {
             :value="config.minutesLimit"
             @change="setNumber('minutesLimit', $event)"
           />
-          <span>minutter, deretter klokkeslett</span>
+          <span>{{ t('config.minutesAfter') }}</span>
         </label>
         <label class="setting">
-          <span>Vis holdeplasser i nærheten innen</span>
+          <span>{{ t('config.distanceBefore') }}</span>
           <input
             type="number"
             inputmode="numeric"
@@ -187,44 +192,55 @@ function reset() {
             :value="config.nearbyDistance"
             @change="setNumber('nearbyDistance', $event)"
           />
-          <span>meter</span>
+          <span>{{ t('config.distanceAfter') }}</span>
         </label>
+        <div class="setting" role="group" :aria-label="t('config.clockFormat')">
+          <span>{{ t('config.clockFormat') }}</span>
+          <div class="segmented">
+            <button
+              v-for="format in CLOCK_FORMATS"
+              :key="format"
+              :class="{ active: config.clockFormat === format }"
+              :aria-pressed="config.clockFormat === format"
+              @click="config.clockFormat = format"
+            >
+              {{ format === '24h' ? '24h · 14:05' : '12h · 2:05 PM' }}
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
     <section>
-      <h2>Automatisk omlasting</h2>
-      <p class="hint">Laster siden på nytt én gang i døgnet, slik at nye versjoner kommer ut.</p>
+      <h2>{{ t('config.autoReload') }}</h2>
+      <p class="hint">{{ t('config.autoReloadHint') }}</p>
       <div class="reload">
         <label class="inline">
           <input v-model="config.autoReload.enabled" type="checkbox" />
-          Last inn på nytt hver dag klokka
+          {{ t('config.autoReloadLabel') }}
         </label>
         <input v-model="config.autoReload.time" type="time" :disabled="!config.autoReload.enabled" required />
-        <button @click="reload">Last inn siden på nytt</button>
+        <button @click="reload">{{ t('config.reloadNow') }}</button>
       </div>
     </section>
 
     <section>
-      <h2>Eksport</h2>
-      <p class="hint">Lag en lenke med hele oppsettet. Åpne lenken på en annen enhet for å kopiere oppsettet dit.</p>
+      <h2>{{ t('config.export') }}</h2>
+      <p class="hint">{{ t('config.exportHint') }}</p>
       <div class="actions">
-        <button @click="createExportUrl">Lag lenke</button>
+        <button @click="createExportUrl">{{ t('config.createLink') }}</button>
       </div>
       <div v-if="exportUrl" class="export">
         <input :value="exportUrl" type="text" readonly @focus="($event.target as HTMLInputElement).select()" />
-        <button @click="copyExportUrl">{{ copied ? 'Kopiert' : 'Kopier' }}</button>
+        <button @click="copyExportUrl">{{ copied ? t('config.copied') : t('config.copy') }}</button>
       </div>
     </section>
 
     <section>
-      <h2>Tilbakestill</h2>
-      <p class="hint">
-        Sletter alle avganger og innstillinger på denne enheten, og glemmer svaret om posisjon. Tillatelsen nettleseren
-        har gitt til posisjon, må fjernes i nettleserens innstillinger for nettstedet.
-      </p>
+      <h2>{{ t('config.reset') }}</h2>
+      <p class="hint">{{ t('config.resetHint') }}</p>
       <div class="actions">
-        <button class="danger" @click="reset">Tilbakestill alt</button>
+        <button class="danger" @click="reset">{{ t('config.resetButton') }}</button>
       </div>
     </section>
   </main>
@@ -248,6 +264,10 @@ function reset() {
   padding: 1rem 0;
   background: var(--bg);
   border-bottom: 1px solid var(--border);
+}
+
+.language-selector {
+  margin-left: auto;
 }
 
 h1 {
@@ -342,6 +362,20 @@ h2 {
 .setting input {
   width: 6rem;
   text-align: right;
+}
+
+.segmented {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.segmented button {
+  opacity: 0.55;
+}
+
+.segmented button.active {
+  border-color: var(--accent);
+  opacity: 1;
 }
 
 .reload {

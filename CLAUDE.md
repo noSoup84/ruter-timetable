@@ -27,7 +27,8 @@ Run `npx vue-tsc -b` and `npm test` before every commit.
 
 ## Conventions
 
-- The UI text is Norwegian. Code, comments, commit messages and repo docs are English. When a doc quotes UI text, keep the Norwegian and add the English in parentheses.
+- The UI is in Norwegian (default) and English. Never write UI text in a component. Add a key to both languages in `src/lib/i18n.ts` and use `t()` from `useI18n`. Text from Entur is `LocalizedText`, shown with `text()`.
+- Code, comments, commit messages and repo docs are English. When a doc quotes UI text, keep the Norwegian and add the English in parentheses.
 - Match the surrounding style: small functions, a short doc comment on exported functions, and comments that say why, not what.
 - No new runtime dependencies without a clear need. Today there are only `vue` and `vue-router`.
 - Dark theme only. The accent is white (`--accent` in `src/style.css`). Don't add blue or other accent colours. Line badge colours come from Entur.

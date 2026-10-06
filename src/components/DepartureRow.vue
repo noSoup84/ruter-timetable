@@ -3,7 +3,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import type { BoardRow } from '../lib/config'
 import { firstSituation, notices, upcoming } from '../lib/departures'
 import type { RowResult } from '../lib/entur'
-import { formatClock, formatDeparture, isDelayed } from '../lib/format'
+import { formatClock, formatDeparture, isDelayed, type ClockFormat } from '../lib/format'
+import { useI18n } from '../composables/useI18n'
 import LineBadge from './LineBadge.vue'
 
 const props = defineProps<{
@@ -11,10 +12,12 @@ const props = defineProps<{
   result: RowResult | undefined
   now: number
   minutesLimit: number
+  clockFormat: ClockFormat
   noticeOpen: boolean
 }>()
 
 const emit = defineEmits<{ toggleNotice: [] }>()
+const { t, text } = useI18n()
 
 const departures = computed(() => (props.result?.found ? upcoming(props.result.departures, props.now) : []))
 const situation = computed(() => (props.result?.found ? firstSituation(props.result.departures) : null))
@@ -54,7 +57,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
       v-if="rowNotices.length"
       class="badge-button"
       :aria-expanded="noticeOpen"
-      aria-label="Vis informasjon"
+      :aria-label="t('row.showInfo')"
       @click.stop="emit('toggleNotice')"
     >
       <LineBadge class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
@@ -66,23 +69,23 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
     </button>
     <LineBadge v-else class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
     <div v-if="noticeOpen && rowNotices.length" class="bubble" :class="{ above: bubbleAbove }" @click.stop>
-      <div v-for="notice in rowNotices" :key="notice.summary" class="notice">
-        <p class="notice-summary">{{ notice.summary }}</p>
-        <p v-if="notice.description" class="notice-description">{{ notice.description }}</p>
+      <div v-for="notice in rowNotices" :key="JSON.stringify(notice.summary)" class="notice">
+        <p class="notice-summary">{{ text(notice.summary) }}</p>
+        <p v-if="notice.description" class="notice-description">{{ text(notice.description) }}</p>
       </div>
     </div>
     <div class="name">
       <div class="title">{{ row.name }}</div>
       <div v-if="situation" class="situation">
-        <span class="warning" aria-hidden="true">!</span>{{ situation }}
+        <span class="warning" aria-hidden="true">!</span>{{ text(situation) }}
       </div>
     </div>
     <div class="times" @click.stop="departures.length && toggleClock()">
       <template v-if="result && !result.found">
-        <span class="dim">Finner ikke linjen</span>
-        <RouterLink to="/config" class="fix">Endre</RouterLink>
+        <span class="dim">{{ t('row.notFound') }}</span>
+        <RouterLink to="/config" class="fix">{{ t('row.edit') }}</RouterLink>
       </template>
-      <span v-else-if="result && departures.length === 0" class="dim">Ingen avganger</span>
+      <span v-else-if="result && departures.length === 0" class="dim">{{ t('row.noDepartures') }}</span>
       <span
         v-for="departure in departures"
         v-else
@@ -90,10 +93,12 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
         class="time"
         :class="{ scheduled: !departure.realtime }"
       >
-        <span v-if="departure.cancelled" class="cancelled">Innstilt</span>
+        <span v-if="departure.cancelled" class="cancelled">{{ t('row.cancelled') }}</span>
         <template v-else>
-          <s v-if="isDelayed(departure.aimed, departure.expected)" class="aimed">{{ formatClock(departure.aimed) }}</s>
-          {{ showClock ? formatClock(departure.expected) : formatDeparture(departure.expected, now, minutesLimit) }}
+          <s v-if="isDelayed(departure.aimed, departure.expected)" class="aimed">{{ formatClock(departure.aimed, clockFormat) }}</s>
+          {{ showClock
+              ? formatClock(departure.expected, clockFormat)
+              : formatDeparture(departure.expected, now, { minutesLimit, nowText: t('row.now'), clockFormat }) }}
         </template>
       </span>
     </div>

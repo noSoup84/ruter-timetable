@@ -1,4 +1,5 @@
 import type { BoardRow, TransportMode } from './config'
+import type { LocalizedText } from './i18n'
 
 const JOURNEY_PLANNER = 'https://api.entur.io/journey-planner/v3/graphql'
 const GEOCODER = 'https://api.entur.io/geocoder/v1/autocomplete'
@@ -19,14 +20,14 @@ export interface Departure {
   cancelled: boolean
   destination: string
   /** Incident summaries, shown under the row. */
-  situations: string[]
+  situations: LocalizedText[]
   /** General notices, shown in the info bubble. */
   notices: Notice[]
 }
 
 export interface Notice {
-  summary: string
-  description: string | null
+  summary: LocalizedText
+  description: LocalizedText | null
 }
 
 export interface LineColours {
@@ -133,10 +134,14 @@ export function buildDeparturesQuery(rows: BoardRow[]): { query: string; variabl
   return { query: `query (${params.join(', ')}) {${fields.join('')}\n}`, variables }
 }
 
-/** Picks the Norwegian text from a multilingual summary, or the first one. */
-function norwegian(texts: { value: string; language: string | null }[]): string | null {
-  const match = texts.find((t) => t.language && ['no', 'nb', 'nob'].includes(t.language))
-  return (match ?? texts[0])?.value ?? null
+/** Maps Entur's language codes to ours. Text without a known code counts as Norwegian. */
+function toLocalized(texts: { value: string; language: string | null }[]): LocalizedText | null {
+  const text: LocalizedText = {}
+  for (const { value, language } of texts) {
+    const key = language && ['en', 'eng'].includes(language) ? 'en' : 'no'
+    text[key] ??= value
+  }
+  return Object.keys(text).length ? text : null
 }
 
 function parseCall(call: RawCall): Departure {
@@ -148,11 +153,11 @@ function parseCall(call: RawCall): Departure {
     destination: call.destinationDisplay?.frontText ?? '',
     situations: call.situations
       .filter((s) => s.reportType === 'incident')
-      .map((s) => norwegian(s.summary))
-      .filter((s): s is string => s !== null),
+      .map((s) => toLocalized(s.summary))
+      .filter((s): s is LocalizedText => s !== null),
     notices: call.situations
       .filter((s) => s.reportType !== 'incident')
-      .map((s) => ({ summary: norwegian(s.summary), description: norwegian(s.description) }))
+      .map((s) => ({ summary: toLocalized(s.summary), description: toLocalized(s.description) }))
       .filter((n): n is Notice => n.summary !== null),
   }
 }
