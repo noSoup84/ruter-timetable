@@ -124,7 +124,7 @@ query ($q0: String!, $l0: ID!) {
       realtime
       cancellation
       destinationDisplay { frontText }
-      situations { reportType summary { value language } }
+      situations { reportType summary { value language } description { value language } }
     }
   }
   l0: line(id: $l0) {
@@ -151,7 +151,8 @@ Vi henter 6 avganger og viser 3, slik at raden fortsatt har 3 avganger når de f
 - Linjemerke med linjenummeret, i linjens farge fra `presentation.colour` og `presentation.textColour` i APIet. For Ruter er det rødt for bybuss, grønt for regionbuss, oransje for t-bane, blått for trikk og lilla for båt. Tog har Vy sine farger. Hvis feltet mangler, brukes fallback per transportmiddel (se under).
 - Radens navn, valgt av brukeren (for eksempel "54 mot Kjelsås").
 - Opptil 3 kommende avganger.
-- Hvis det finnes aktive driftsvarsler: et varselikon og den norske `summary`-teksten på én linje under raden, avkortet med ellipse. Er det flere, vises det første. Bare varsler med `reportType: incident` vises, for eksempel "Buss for trikk", omkjøring og flyttet holdeplass. Varsler med `reportType: general` er generell info, for eksempel "Buss 54 får økt frekvens", og vises ikke. `severity` er "normal" på alle Ruters varsler (sjekket 2026-10-06), så den brukes ikke.
+- Hvis det finnes aktive driftsvarsler: et varselikon og den norske `summary`-teksten på én linje under raden, avkortet med ellipse. Er det flere, vises det første. Bare varsler med `reportType: incident` vises, for eksempel "Buss for trikk", omkjøring og flyttet holdeplass. Varsler med `reportType: general` er generell info, for eksempel "Buss 54 får økt frekvens", og vises ikke under raden. `severity` er "normal" på alle Ruters varsler (sjekket 2026-10-06), så den brukes ikke.
+- Hvis det finnes generell info, vises en liten "i"-knapp etter radens navn. Trykk på den åpner en snakkeboble under navnet med `summary` og `description` for hvert varsel. Bare én boble er åpen om gangen. Den lukkes ved trykk på knappen, trykk utenfor boblen, eller av seg selv etter 20 sekunder, slik at tavla ikke blir stående med en åpen boble.
 - Hvis det ikke finnes kommende avganger: "Ingen avganger" i svak farge. Raden blir stående, slik at layouten ikke hopper.
 
 ### Tidsformat

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { badgeColours, firstSituation, upcoming } from './departures'
+import { badgeColours, firstSituation, notices, upcoming } from './departures'
 import type { Departure } from './entur'
 
 const now = Date.parse('2026-10-06T14:00:00+02:00')
@@ -13,6 +13,7 @@ function departure(minutes: number, overrides: Partial<Departure> = {}): Departu
     cancelled: false,
     destination: 'Kjelsås stasjon',
     situations: [],
+    notices: [],
     ...overrides,
   }
 }
@@ -32,6 +33,15 @@ describe('firstSituation', () => {
   it('returns the first situation on any departure', () => {
     expect(firstSituation([departure(1), departure(2, { situations: ['Buss for trikk'] })])).toBe('Buss for trikk')
     expect(firstSituation([departure(1)])).toBeNull()
+  })
+})
+
+describe('notices', () => {
+  it('collects notices from all departures without duplicates', () => {
+    const frequency = { summary: 'Buss 54 får økt frekvens', description: 'Fra 4. oktober' }
+    const minutes = { summary: 'Minuttjusteringer', description: null }
+    const list = [departure(1, { notices: [frequency] }), departure(2, { notices: [frequency, minutes] })]
+    expect(notices(list)).toEqual([frequency, minutes])
   })
 })
 

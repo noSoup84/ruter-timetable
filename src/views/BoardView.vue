@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import DepartureRow from '../components/DepartureRow.vue'
 import { useAutoReload } from '../composables/useAutoReload'
 import { useConfig } from '../composables/useConfig'
@@ -17,6 +17,21 @@ const { results, lastSuccess } = useDepartures(rows)
 useAutoReload()
 const startedAt = Date.now()
 
+/** Close the info bubble by itself, so the board is not left with it open. */
+const NOTICE_TIMEOUT = 20_000
+
+const openNotice = ref<string | null>(null)
+let noticeTimer: ReturnType<typeof setTimeout> | undefined
+
+function toggleNotice(rowId: string) {
+  openNotice.value = openNotice.value === rowId ? null : rowId
+}
+
+watch(openNotice, (id) => {
+  clearTimeout(noticeTimer)
+  if (id) noticeTimer = setTimeout(() => (openNotice.value = null), NOTICE_TIMEOUT)
+})
+
 const stale = computed(() => {
   if (rows.value.length === 0) return null
   if (lastSuccess.value === null) return now.value - startedAt > STALE_AFTER ? 'Får ikke kontakt med Entur' : null
@@ -26,11 +41,19 @@ const stale = computed(() => {
 </script>
 
 <template>
-  <main class="board">
+  <main class="board" @click="openNotice = null">
     <header class="clock">{{ formatClock(now) }}</header>
 
     <ul v-if="rows.length" class="rows">
-      <DepartureRow v-for="row in rows" :key="row.id" :row="row" :result="results.get(row.id)" :now="now" />
+      <DepartureRow
+        v-for="row in rows"
+        :key="row.id"
+        :row="row"
+        :result="results.get(row.id)"
+        :now="now"
+        :notice-open="openNotice === row.id"
+        @toggle-notice="toggleNotice(row.id)"
+      />
     </ul>
     <p v-else class="empty">
       Ingen avganger er satt opp.

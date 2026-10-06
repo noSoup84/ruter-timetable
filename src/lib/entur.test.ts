@@ -48,6 +48,7 @@ describe('parseDepartures', () => {
               {
                 reportType: 'general',
                 summary: [{ value: 'Fra 4. oktober: Buss 54 får økt frekvens', language: 'no' }],
+                description: [{ value: 'Bussen går hvert 10. minutt.', language: 'no' }],
               },
               {
                 reportType: 'incident',
@@ -55,6 +56,7 @@ describe('parseDepartures', () => {
                   { value: 'Bus 54 is diverted', language: 'en' },
                   { value: 'Buss 54 har omkjøring', language: 'no' },
                 ],
+                description: [],
               },
             ],
           },
@@ -63,7 +65,7 @@ describe('parseDepartures', () => {
       l0: { id: 'RUT:Line:54', presentation: { colour: 'E60000', textColour: 'FFFFFF' } },
     })
 
-    // The general notice is dropped, and the incident is shown in Norwegian.
+    // The incident goes under the row in Norwegian, and the general notice goes to the info bubble.
     expect(results.get('a')).toEqual({
       found: true,
       departures: [
@@ -74,6 +76,7 @@ describe('parseDepartures', () => {
           cancelled: false,
           destination: 'Kjelsås stasjon',
           situations: ['Buss 54 har omkjøring'],
+          notices: [{ summary: 'Fra 4. oktober: Buss 54 får økt frekvens', description: 'Bussen går hvert 10. minutt.' }],
         },
       ],
       colours: { colour: 'E60000', textColour: 'FFFFFF' },

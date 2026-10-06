@@ -13,7 +13,15 @@ export interface Departure {
   realtime: boolean
   cancelled: boolean
   destination: string
+  /** Incident summaries, shown under the row. */
   situations: string[]
+  /** General notices, shown in the info bubble. */
+  notices: Notice[]
+}
+
+export interface Notice {
+  summary: string
+  description: string | null
 }
 
 export interface LineColours {
@@ -70,7 +78,11 @@ interface RawCall {
   realtime: boolean
   cancellation: boolean
   destinationDisplay: { frontText: string | null } | null
-  situations: { reportType: string | null; summary: { value: string; language: string | null }[] }[]
+  situations: {
+    reportType: string | null
+    summary: { value: string; language: string | null }[]
+    description: { value: string; language: string | null }[]
+  }[]
 }
 
 interface RawLine {
@@ -104,7 +116,7 @@ export function buildDeparturesQuery(rows: BoardRow[]): { query: string; variabl
       realtime
       cancellation
       destinationDisplay { frontText }
-      situations { reportType summary { value language } }
+      situations { reportType summary { value language } description { value language } }
     }
   }
   l${i}: line(id: $l${i}) {
@@ -129,11 +141,14 @@ function parseCall(call: RawCall): Departure {
     realtime: call.realtime,
     cancelled: call.cancellation,
     destination: call.destinationDisplay?.frontText ?? '',
-    // Only incidents. General notices, like timetable changes, are left out.
     situations: call.situations
       .filter((s) => s.reportType === 'incident')
       .map((s) => norwegian(s.summary))
       .filter((s): s is string => s !== null),
+    notices: call.situations
+      .filter((s) => s.reportType !== 'incident')
+      .map((s) => ({ summary: norwegian(s.summary), description: norwegian(s.description) }))
+      .filter((n): n is Notice => n.summary !== null),
   }
 }
 
