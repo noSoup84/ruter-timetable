@@ -45,7 +45,11 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
       @click.stop="emit('toggleNotice')"
     >
       <LineBadge class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
-      <span class="info" aria-hidden="true">i</span>
+      <svg class="info" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="12" fill="#f5c400" />
+        <circle cx="12" cy="6.8" r="1.9" fill="#000" />
+        <rect x="10.3" y="10.2" width="3.4" height="8.6" rx="1.2" fill="#000" />
+      </svg>
     </button>
     <LineBadge v-else class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
     <div v-if="noticeOpen && rowNotices.length" class="bubble" @click.stop>
@@ -113,24 +117,15 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   font-size: inherit;
 }
 
-/* Small white circle with a black "i" in the top left corner of the badge. */
+/* Small yellow circle with a black "i" in the top left corner of the badge. */
 .info {
   position: absolute;
-  top: -0.3em;
-  left: -0.3em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 0.9em;
-  height: 0.9em;
+  top: -0.28em;
+  left: -0.28em;
+  width: 0.65em;
+  height: 0.65em;
   border-radius: 50%;
-  background: #fff;
-  color: #000;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 0.6em;
-  font-weight: 700;
-  line-height: 1;
-  box-shadow: 0 0 0 0.1em var(--bg);
+  box-shadow: 0 0 0 0.06em var(--bg);
 }
 
 .bubble {
