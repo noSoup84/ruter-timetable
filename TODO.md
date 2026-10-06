@@ -29,5 +29,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] "min" skrives som "m", for eksempel "5 m". (2026-10-06, c165a04)
 - [x] Pilknappene for å flytte avganger erstattes med dra og slipp. (2026-10-06, ca8d407)
 - [x] Knappen "Last inn siden på nytt" flyttes til samme linje som klokkeslettet for automatisk omlasting, til høyre for feltet. (2026-10-06, ca8d407)
-- [x] Grensen for når minutter byttes til klokkeslett, og nærhetsgrensen for holdeplasser (standard 250 m), skal kunne endres i config. (2026-10-06, COMMIT)
-- [x] Den blå knappen "Legg til avganger" passer ikke med temaet. Hovedknapper, valgte rader og avkrysningsbokser er nå hvite i stedet for blå. (2026-10-06, COMMIT)
+- [x] Grensen for når minutter byttes til klokkeslett, og nærhetsgrensen for holdeplasser (standard 250 m), skal kunne endres i config. (2026-10-06, b163f93)
+- [x] Den blå knappen "Legg til avganger" passer ikke med temaet. Hovedknapper, valgte rader og avkrysningsbokser er nå hvite i stedet for blå. (2026-10-06, b163f93)
