@@ -37,4 +37,4 @@ Feedback and tasks for the app. New items go under "Open". When an item is done,
 - [x] The Entur client name should not be hardcoded, since the repository can be forked. It is now set at build time from the repository owner in GitHub Actions. (2026-10-06, d9f826e)
 - [x] The GitHub Pages path was hardcoded as `/ruter-timetable/`. It is now set at build time from the repository name, or from the `BASE_PATH` variable. (2026-10-06, 02b725e)
 - [x] README.md, SPEC.md and TODO.md should be in English. (2026-10-06, b2979d7)
-- [x] Add a CLAUDE.md that helps Claude with further development. (2026-10-06, COMMIT)
+- [x] Add a CLAUDE.md that helps Claude with further development. (2026-10-06, 11c8c52)
