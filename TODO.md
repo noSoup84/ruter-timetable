@@ -27,3 +27,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Info-boblen på nederste rad havnet utenfor skjermen. Rader i nedre halvdel åpner den nå oppover. (2026-10-06, da7aafd)
 - [x] Config-siden skal være tilpasset nettbrett og ha plass til virtuelt tastatur. "Tilbake til avganger" skal være en knapp til venstre. (2026-10-06, c165a04)
 - [x] "min" skrives som "m", for eksempel "5 m". (2026-10-06, c165a04)
+- [x] Pilknappene for å flytte avganger erstattes med dra og slipp. (2026-10-06, COMMIT)
+- [x] Knappen "Last inn siden på nytt" flyttes til samme linje som klokkeslettet for automatisk omlasting, til høyre for feltet. (2026-10-06, COMMIT)

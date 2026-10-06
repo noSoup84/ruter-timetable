@@ -202,7 +202,7 @@ Config-siden er laget for berøring på nettbrett: større tekst, knapper og avk
 - Hver rad viser linjemerke, navn og holdeplass.
 - Endre navn direkte i listen. Skal linje, holdeplass eller retning endres, lager man en ny rad og sletter den gamle.
 - Slette rad, med bekreftelse.
-- Flytte opp og ned med piler.
+- Flytte ved å dra i håndtaket (seks prikker) til venstre på raden. Fungerer med både berøring og mus. Siden ruller når man drar nær øvre eller nedre kant.
 - Knapp "Legg til avganger".
 - Ingen grense på antall rader, men layouten er laget for rundt 3 til 8.
 

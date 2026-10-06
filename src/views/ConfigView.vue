@@ -17,10 +17,52 @@ function add(rows: BoardRow[]) {
   adding.value = false
 }
 
-function move(index: number, offset: number) {
+// Drag to reorder. Pointer events work for both touch and mouse, which
+// native HTML drag and drop does not on iPad.
+
+/** Scroll the page when dragging this close to the top or bottom edge. */
+const SCROLL_EDGE = 80
+
+const rowElements = new Map<string, HTMLElement>()
+const draggingId = ref<string | null>(null)
+
+function setRowElement(id: string, element: unknown) {
+  if (element instanceof HTMLElement) rowElements.set(id, element)
+  else rowElements.delete(id)
+}
+
+function middleOf(id: string | undefined): number | null {
+  const rect = id ? rowElements.get(id)?.getBoundingClientRect() : undefined
+  return rect ? rect.top + rect.height / 2 : null
+}
+
+function startDrag(event: PointerEvent, row: BoardRow) {
+  ;(event.currentTarget as HTMLElement).setPointerCapture(event.pointerId)
+  draggingId.value = row.id
+}
+
+function drag(event: PointerEvent) {
+  if (!draggingId.value) return
   const rows = config.value.rows
-  const [row] = rows.splice(index, 1)
-  rows.splice(index + offset, 0, row)
+  let index = rows.findIndex((r) => r.id === draggingId.value)
+
+  // Swap with a neighbour once the pointer passes its middle.
+  for (;;) {
+    const above = middleOf(rows[index - 1]?.id)
+    const below = middleOf(rows[index + 1]?.id)
+    const target = above !== null && event.clientY < above ? index - 1 : below !== null && event.clientY > below ? index + 1 : index
+    if (target === index) break
+    const [row] = rows.splice(index, 1)
+    rows.splice(target, 0, row)
+    index = target
+  }
+
+  if (event.clientY < SCROLL_EDGE) window.scrollBy(0, -12)
+  else if (event.clientY > window.innerHeight - SCROLL_EDGE) window.scrollBy(0, 12)
+}
+
+function endDrag() {
+  draggingId.value = null
 }
 
 function remove(row: BoardRow) {
@@ -73,22 +115,39 @@ function reset() {
     <section>
       <h2>Avganger</h2>
       <p v-if="config.rows.length === 0" class="hint">Ingen avganger er lagt til ennå.</p>
-      <ul class="rows">
-        <li v-for="(row, index) in config.rows" :key="row.id" class="row">
+      <TransitionGroup tag="ul" name="reorder" class="rows">
+        <li
+          v-for="row in config.rows"
+          :key="row.id"
+          :ref="(element) => setRowElement(row.id, element)"
+          class="row"
+          :class="{ dragging: draggingId === row.id }"
+        >
+          <button
+            class="handle"
+            aria-label="Dra for å flytte"
+            @pointerdown="startDrag($event, row)"
+            @pointermove="drag"
+            @pointerup="endDrag"
+            @pointercancel="endDrag"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true">
+              <circle cx="9" cy="6" r="1.6" />
+              <circle cx="15" cy="6" r="1.6" />
+              <circle cx="9" cy="12" r="1.6" />
+              <circle cx="15" cy="12" r="1.6" />
+              <circle cx="9" cy="18" r="1.6" />
+              <circle cx="15" cy="18" r="1.6" />
+            </svg>
+          </button>
           <LineBadge :mode="row.transportMode" :public-code="row.publicCode" :colours="null" />
           <div class="details">
             <input v-model="row.name" type="text" aria-label="Navn" />
             <span class="hint">Fra {{ row.stopName }}</span>
           </div>
-          <div class="buttons">
-            <button :disabled="index === 0" aria-label="Flytt opp" @click="move(index, -1)">↑</button>
-            <button :disabled="index === config.rows.length - 1" aria-label="Flytt ned" @click="move(index, 1)">
-              ↓
-            </button>
-            <button aria-label="Slett" @click="remove(row)">Slett</button>
-          </div>
+          <button aria-label="Slett" @click="remove(row)">Slett</button>
         </li>
-      </ul>
+      </TransitionGroup>
       <AddRows v-if="adding" :existing="config.rows" @add="add" @cancel="adding = false" />
       <button v-else class="primary" @click="adding = true">Legg til avganger</button>
     </section>
@@ -96,12 +155,12 @@ function reset() {
     <section>
       <h2>Automatisk omlasting</h2>
       <p class="hint">Laster siden på nytt én gang i døgnet, slik at nye versjoner kommer ut.</p>
-      <label class="inline">
-        <input v-model="config.autoReload.enabled" type="checkbox" />
-        Last inn på nytt hver dag klokka
-      </label>
-      <input v-model="config.autoReload.time" type="time" :disabled="!config.autoReload.enabled" required />
-      <div class="actions">
+      <div class="reload">
+        <label class="inline">
+          <input v-model="config.autoReload.enabled" type="checkbox" />
+          Last inn på nytt hver dag klokka
+        </label>
+        <input v-model="config.autoReload.time" type="time" :disabled="!config.autoReload.enabled" required />
         <button @click="reload">Last inn siden på nytt</button>
       </div>
     </section>
@@ -174,7 +233,7 @@ h2 {
 
 .row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 0;
@@ -191,20 +250,47 @@ h2 {
   width: 100%;
 }
 
-.buttons {
-  display: flex;
-  gap: 0.5rem;
+.row.dragging {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  box-shadow: 0 0.5rem 1.5rem rgb(0 0 0 / 0.8);
 }
 
-.buttons button {
-  min-width: 3rem;
+.reorder-move {
+  transition: transform 0.15s ease;
+}
+
+.handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--dim);
+  cursor: grab;
+  /* Stops the page from scrolling while dragging on touch screens. */
+  touch-action: none;
+}
+
+.dragging .handle {
+  color: var(--text);
+  cursor: grabbing;
 }
 
 .inline {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  margin-right: 0.5rem;
+}
+
+.reload {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .actions {
