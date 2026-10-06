@@ -21,4 +21,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Tavla brukte for lite av skjermen på iPad. Skriften skaleres nå etter både høyde og bredde, og radene fyller høyden. (2026-10-06, 0d07277)
 - [x] Info-knappen flyttes til en liten hvit sirkel med sort "i" i hjørnet av linjemerket, og trykk på merket åpner boblen. Det sparer plass i bredden. (2026-10-06, 413699b)
 - [x] Trykk på tidene viser dem som klokkeslett (HH:MM) i 5 sekunder. (2026-10-06, 413699b)
-- [x] Info-indikatoren så ikke bra ut, og skal være gul. Den er nå et SVG-ikon, gul sirkel med sort "i". (2026-10-06, COMMIT)
+- [x] Info-indikatoren så ikke bra ut, og skal være gul. Den er nå et SVG-ikon, gul sirkel med sort "i". (2026-10-06, 3985746)
