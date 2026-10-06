@@ -2,7 +2,12 @@ import type { BoardRow, TransportMode } from './config'
 
 const JOURNEY_PLANNER = 'https://api.entur.io/journey-planner/v3/graphql'
 const GEOCODER = 'https://api.entur.io/geocoder/v1/autocomplete'
-const CLIENT_NAME = 'nosoup84-ruter-timetable'
+/**
+ * Identifies this app to Entur, as "<owner>-<app>". Set at build time, so a
+ * fork does not send requests under someone else's name. GitHub Actions sets
+ * it from the repository owner. See README.md.
+ */
+const CLIENT_NAME = import.meta.env.VITE_ENTUR_CLIENT_NAME || 'unnamed-ruter-timetable'
 
 /** Departures fetched per row. More than we show, so rows stay full between fetches. */
 const DEPARTURES_PER_ROW = 6
