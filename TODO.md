@@ -23,5 +23,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Trykk på tidene viser dem som klokkeslett (HH:MM) i 5 sekunder. (2026-10-06, 413699b)
 - [x] Info-indikatoren så ikke bra ut, og skal være gul. Den er nå et SVG-ikon, gul sirkel med sort "i". (2026-10-06, 3985746)
 - [x] Info-boblen skal ha hvit kant. (2026-10-06, 6c42f88)
-- [x] Info-boblen skal lukkes av seg selv etter 10 sekunder uten trykk. (2026-10-06, COMMIT)
-- [x] Info-boblen på nederste rad havnet utenfor skjermen. Rader i nedre halvdel åpner den nå oppover. (2026-10-06, COMMIT)
+- [x] Info-boblen skal lukkes av seg selv etter 10 sekunder uten trykk. (2026-10-06, da7aafd)
+- [x] Info-boblen på nederste rad havnet utenfor skjermen. Rader i nedre halvdel åpner den nå oppover. (2026-10-06, da7aafd)
