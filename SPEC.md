@@ -152,7 +152,8 @@ Vi henter 6 avganger og viser 3, slik at raden fortsatt har 3 avganger når de f
 - Radens navn, valgt av brukeren (for eksempel "54 mot Kjelsås").
 - Opptil 3 kommende avganger.
 - Hvis det finnes aktive driftsvarsler: et varselikon og den norske `summary`-teksten på én linje under raden, avkortet med ellipse. Er det flere, vises det første. Bare varsler med `reportType: incident` vises, for eksempel "Buss for trikk", omkjøring og flyttet holdeplass. Varsler med `reportType: general` er generell info, for eksempel "Buss 54 får økt frekvens", og vises ikke under raden. `severity` er "normal" på alle Ruters varsler (sjekket 2026-10-06), så den brukes ikke.
-- Hvis det finnes generell info, vises en liten "i"-knapp etter radens navn. Trykk på den åpner en snakkeboble under navnet med `summary` og `description` for hvert varsel. Bare én boble er åpen om gangen. Den lukkes ved trykk på knappen, trykk utenfor boblen, eller av seg selv etter 20 sekunder, slik at tavla ikke blir stående med en åpen boble.
+- Hvis det finnes generell info, får linjemerket en liten hvit sirkel med sort "i" i øvre venstre hjørne. Trykk på linjemerket åpner en snakkeboble under merket med `summary` og `description` for hvert varsel. Bare én boble er åpen om gangen. Den lukkes ved nytt trykk på merket, trykk utenfor boblen, eller av seg selv etter 20 sekunder, slik at tavla ikke blir stående med en åpen boble.
+- Trykk på tidene i en rad viser alle tidene i raden som klokkeslett (HH:MM) i 5 sekunder. Nytt trykk bytter tilbake med en gang.
 - Hvis det ikke finnes kommende avganger: "Ingen avganger" i svak farge. Raden blir stående, slik at layouten ikke hopper.
 
 ### Tidsformat

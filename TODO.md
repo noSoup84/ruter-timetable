@@ -19,3 +19,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Generell info som "Fra 4. oktober: Buss 54 får økt frekvens" skal ikke vises, bare driftsvarsler. Filtrerer nå på `reportType: incident`. (2026-10-06, f722853)
 - [x] Generell info skal kunne leses ved å trykke på en liten info-knapp som åpner en snakkeboble. (2026-10-06, 65c3f5b)
 - [x] Tavla brukte for lite av skjermen på iPad. Skriften skaleres nå etter både høyde og bredde, og radene fyller høyden. (2026-10-06, 0d07277)
+- [x] Info-knappen flyttes til en liten hvit sirkel med sort "i" i hjørnet av linjemerket, og trykk på merket åpner boblen. Det sparer plass i bredden. (2026-10-06, COMMIT)
+- [x] Trykk på tidene viser dem som klokkeslett (HH:MM) i 5 sekunder. (2026-10-06, COMMIT)
