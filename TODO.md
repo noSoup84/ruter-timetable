@@ -42,4 +42,4 @@ Feedback and tasks for the app. New items go under "Open". When an item is done,
 - [x] Localization: switch the app between Norwegian (default) and English with flag buttons on the config page. Entur notices follow the language where Entur has a translation. (2026-10-06, d706959)
 - [x] Time format option on the config page: 24-hour (default) or 12-hour. (2026-10-06, d706959)
 - [x] The time format buttons should show only "24h" and "12h", without example times. (2026-10-06, 2b26e6d)
-- [x] Service alert text was cut off and could not be read. It now wraps under the row name, with a yellow warning triangle instead of the round "!". (2026-10-06, COMMIT)
+- [x] Service alert text was cut off and could not be read. It now wraps under the row name, with a yellow warning triangle instead of the round "!". (2026-10-06, 10b0c07)
