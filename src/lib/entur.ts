@@ -70,7 +70,7 @@ interface RawCall {
   realtime: boolean
   cancellation: boolean
   destinationDisplay: { frontText: string | null } | null
-  situations: { summary: { value: string; language: string | null }[] }[]
+  situations: { reportType: string | null; summary: { value: string; language: string | null }[] }[]
 }
 
 interface RawLine {
@@ -104,7 +104,7 @@ export function buildDeparturesQuery(rows: BoardRow[]): { query: string; variabl
       realtime
       cancellation
       destinationDisplay { frontText }
-      situations { summary { value language } }
+      situations { reportType summary { value language } }
     }
   }
   l${i}: line(id: $l${i}) {
@@ -129,7 +129,11 @@ function parseCall(call: RawCall): Departure {
     realtime: call.realtime,
     cancelled: call.cancellation,
     destination: call.destinationDisplay?.frontText ?? '',
-    situations: call.situations.map((s) => norwegian(s.summary)).filter((s): s is string => s !== null),
+    // Only incidents. General notices, like timetable changes, are left out.
+    situations: call.situations
+      .filter((s) => s.reportType === 'incident')
+      .map((s) => norwegian(s.summary))
+      .filter((s): s is string => s !== null),
   }
 }
 

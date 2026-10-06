@@ -33,7 +33,7 @@ describe('buildDeparturesQuery', () => {
 })
 
 describe('parseDepartures', () => {
-  it('parses departures, colours and Norwegian situation texts', () => {
+  it('parses departures, colours and Norwegian incident texts', () => {
     const results = parseDepartures(rows.slice(0, 1), {
       q0: {
         id: 'NSR:Quay:105467',
@@ -46,9 +46,14 @@ describe('parseDepartures', () => {
             destinationDisplay: { frontText: 'Kjelsås stasjon' },
             situations: [
               {
+                reportType: 'general',
+                summary: [{ value: 'Fra 4. oktober: Buss 54 får økt frekvens', language: 'no' }],
+              },
+              {
+                reportType: 'incident',
                 summary: [
-                  { value: 'From October 4', language: 'en' },
-                  { value: 'Fra 4. oktober', language: 'no' },
+                  { value: 'Bus 54 is diverted', language: 'en' },
+                  { value: 'Buss 54 har omkjøring', language: 'no' },
                 ],
               },
             ],
@@ -58,6 +63,7 @@ describe('parseDepartures', () => {
       l0: { id: 'RUT:Line:54', presentation: { colour: 'E60000', textColour: 'FFFFFF' } },
     })
 
+    // The general notice is dropped, and the incident is shown in Norwegian.
     expect(results.get('a')).toEqual({
       found: true,
       departures: [
@@ -67,7 +73,7 @@ describe('parseDepartures', () => {
           realtime: true,
           cancelled: false,
           destination: 'Kjelsås stasjon',
-          situations: ['Fra 4. oktober'],
+          situations: ['Buss 54 har omkjøring'],
         },
       ],
       colours: { colour: 'E60000', textColour: 'FFFFFF' },
