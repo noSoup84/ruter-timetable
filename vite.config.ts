@@ -21,8 +21,9 @@ function contentSecurityPolicy(): Plugin {
 }
 
 export default defineConfig({
-  // GitHub Pages serves the app from /<repo>/
-  base: '/ruter-timetable/',
+  // GitHub Pages serves the app from /<repo>/. GitHub Actions sets BASE_PATH
+  // from the repository name, so forks with another name also work.
+  base: process.env.BASE_PATH || '/ruter-timetable/',
   plugins: [vue(), contentSecurityPolicy()],
   test: {
     env: { TZ: 'Europe/Oslo' },

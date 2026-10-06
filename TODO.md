@@ -35,3 +35,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Sikkerhetsgjennomgang (`SECURITY-REVIEW.md`): begrenset Pages-tilganger til deploy-jobben, egen concurrency-gruppe per gren, maks 50 rader og 200 tegn i oppsettet, og CSP i produksjonsbygget. Fester ikke actions til commit-SHA. (2026-10-06, e071e32)
 - [x] Siden mangler favicon. Har nå et SVG-ikon (tre linjemerker i rødt, blått og oransje med hvite streker på sort) og et 180 px PNG-ikon for "Legg til på Hjem-skjerm" på iPad. (2026-10-06, 9db2b8b)
 - [x] Entur-klientnavnet skal ikke være hardkodet, siden repoet kan forkes. Settes nå ved bygg fra repo-eieren i GitHub Actions. (2026-10-06, d9f826e)
+- [x] Stien på GitHub Pages var hardkodet som `/ruter-timetable/`. Settes nå fra navnet på repoet ved bygg, eller fra variabelen `BASE_PATH`. (2026-10-06, COMMIT)

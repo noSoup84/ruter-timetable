@@ -32,6 +32,9 @@ jobs:
           CLIENT_NAME: ${{ vars.ENTUR_CLIENT_NAME || format('{0}-ruter-timetable', github.repository_owner) }}
         run: echo "VITE_ENTUR_CLIENT_NAME=$(echo "$CLIENT_NAME" | tr '[:upper:]' '[:lower:]')" >> "$GITHUB_ENV"
       - run: npm run build
+        env:
+          # The path GitHub Pages serves from. Set the BASE_PATH variable to "/" for a custom domain.
+          BASE_PATH: ${{ vars.BASE_PATH || format('/{0}/', github.event.repository.name) }}
       - uses: actions/upload-pages-artifact@v4
         if: github.ref == 'refs/heads/main'
         with:
