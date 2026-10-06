@@ -36,4 +36,4 @@ Feedback and tasks for the app. New items go under "Open". When an item is done,
 - [x] The site has no favicon. It now has an SVG icon (three line badges in red, blue and orange with white bars on black) and a 180 px PNG icon for "Add to Home Screen" on iPad. (2026-10-06, 9db2b8b)
 - [x] The Entur client name should not be hardcoded, since the repository can be forked. It is now set at build time from the repository owner in GitHub Actions. (2026-10-06, d9f826e)
 - [x] The GitHub Pages path was hardcoded as `/ruter-timetable/`. It is now set at build time from the repository name, or from the `BASE_PATH` variable. (2026-10-06, 02b725e)
-- [x] README.md, SPEC.md and TODO.md should be in English. (2026-10-06, COMMIT)
+- [x] README.md, SPEC.md and TODO.md should be in English. (2026-10-06, b2979d7)
