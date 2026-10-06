@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   STORAGE_KEY,
+  clearConfig,
   decodeConfig,
   defaultConfig,
   encodeConfig,
@@ -68,6 +69,13 @@ describe('loadConfig and saveConfig', () => {
   it('returns the default config when stored data is broken', () => {
     const storage = memoryStorage()
     storage.setItem(STORAGE_KEY, '{not json')
+    expect(loadConfig(storage)).toEqual(defaultConfig())
+  })
+
+  it('returns the default config after clearing', () => {
+    const storage = memoryStorage()
+    saveConfig(config, storage)
+    clearConfig(storage)
     expect(loadConfig(storage)).toEqual(defaultConfig())
   })
 

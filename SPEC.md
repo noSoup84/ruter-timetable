@@ -226,6 +226,7 @@ Eksempel: hjemme ved Kværnerbyen krysser man av 54 fra Kværnerbyen og 70 og 34
 
 - Automatisk omlasting: av/på og klokkeslett.
 - Knapp "Last inn siden på nytt".
+- Knapp "Tilbakestill alt", med bekreftelse. Den sletter oppsettet i localStorage, glemmer svaret om posisjon og laster forsiden på nytt. Nyttig ved testing. Tillatelsen nettleseren har gitt til posisjon, kan ikke fjernes fra JavaScript, og må fjernes i nettleserens innstillinger for nettstedet.
 
 ### Eksport og import
 

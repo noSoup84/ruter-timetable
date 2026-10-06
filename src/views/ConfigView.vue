@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import AddRows from '../components/AddRows.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
-import { encodeConfig, type BoardRow } from '../lib/config'
+import { clearConfig, encodeConfig, type BoardRow } from '../lib/config'
 
 const config = useConfig()
 const adding = ref(false)
@@ -39,6 +39,14 @@ async function copyExportUrl() {
 }
 
 function reload() {
+  location.reload()
+}
+
+function reset() {
+  if (!confirm('Slette alle avganger og innstillinger på denne enheten?')) return
+  clearConfig()
+  // A full reload also forgets the position choice, which is only kept in memory.
+  location.replace(`${location.pathname}#/`)
   location.reload()
 }
 </script>
@@ -95,6 +103,17 @@ function reload() {
       <div v-if="exportUrl" class="export">
         <input :value="exportUrl" type="text" readonly @focus="($event.target as HTMLInputElement).select()" />
         <button @click="copyExportUrl">{{ copied ? 'Kopiert' : 'Kopier' }}</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Tilbakestill</h2>
+      <p class="hint">
+        Sletter alle avganger og innstillinger på denne enheten, og glemmer svaret om posisjon. Tillatelsen nettleseren
+        har gitt til posisjon, må fjernes i nettleserens innstillinger for nettstedet.
+      </p>
+      <div class="actions">
+        <button class="danger" @click="reset">Tilbakestill alt</button>
       </div>
     </section>
   </main>
@@ -167,6 +186,11 @@ h2 {
 
 .actions {
   margin-top: 1rem;
+}
+
+.danger {
+  border-color: var(--red);
+  color: var(--red);
 }
 
 .export {

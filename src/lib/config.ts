@@ -73,6 +73,10 @@ export function loadConfig(storage: Storage = localStorage): AppConfig {
   }
 }
 
+export function clearConfig(storage: Storage = localStorage): void {
+  storage.removeItem(STORAGE_KEY)
+}
+
 export function saveConfig(config: AppConfig, storage: Storage = localStorage): void {
   storage.setItem(STORAGE_KEY, JSON.stringify(config))
 }
