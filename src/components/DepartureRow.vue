@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import type { BoardRow } from '../lib/config'
 import { firstSituation, notices, upcoming } from '../lib/departures'
 import type { RowResult } from '../lib/entur'
@@ -23,6 +23,18 @@ const colours = computed(() => (props.result?.found ? props.result.colours : nul
 /** How long a tap on the times shows them as clock time. */
 const CLOCK_TIMEOUT = 5_000
 
+// Rows in the lower half of the screen open the bubble upwards, so it stays on screen.
+const rowElement = ref<HTMLElement | null>(null)
+const bubbleAbove = ref(false)
+
+watch(
+  () => props.noticeOpen,
+  (open) => {
+    const rect = rowElement.value?.getBoundingClientRect()
+    if (open && rect) bubbleAbove.value = rect.top + rect.height / 2 > window.innerHeight / 2
+  },
+)
+
 const showClock = ref(false)
 let clockTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -36,7 +48,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
 </script>
 
 <template>
-  <li class="row">
+  <li ref="rowElement" class="row">
     <button
       v-if="rowNotices.length"
       class="badge-button"
@@ -52,7 +64,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
       </svg>
     </button>
     <LineBadge v-else class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
-    <div v-if="noticeOpen && rowNotices.length" class="bubble" @click.stop>
+    <div v-if="noticeOpen && rowNotices.length" class="bubble" :class="{ above: bubbleAbove }" @click.stop>
       <div v-for="notice in rowNotices" :key="notice.summary" class="notice">
         <p class="notice-summary">{{ notice.summary }}</p>
         <p v-if="notice.description" class="notice-description">{{ notice.description }}</p>
@@ -155,6 +167,17 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   border-left: 1px solid #fff;
   border-top: 1px solid #fff;
   transform: rotate(45deg);
+}
+
+.bubble.above {
+  top: auto;
+  bottom: calc(100% - 0.2em);
+}
+
+.bubble.above::before {
+  top: auto;
+  bottom: -0.5em;
+  transform: rotate(225deg);
 }
 
 .notice + .notice {

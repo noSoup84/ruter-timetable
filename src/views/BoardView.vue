@@ -17,8 +17,8 @@ const { results, lastSuccess } = useDepartures(rows)
 useAutoReload()
 const startedAt = Date.now()
 
-/** Close the info bubble by itself, so the board is not left with it open. */
-const NOTICE_TIMEOUT = 20_000
+/** Close the info bubble when the screen has not been tapped for this long. */
+const NOTICE_TIMEOUT = 10_000
 
 const openNotice = ref<string | null>(null)
 let noticeTimer: ReturnType<typeof setTimeout> | undefined
@@ -27,10 +27,12 @@ function toggleNotice(rowId: string) {
   openNotice.value = openNotice.value === rowId ? null : rowId
 }
 
-watch(openNotice, (id) => {
+function restartNoticeTimer() {
   clearTimeout(noticeTimer)
-  if (id) noticeTimer = setTimeout(() => (openNotice.value = null), NOTICE_TIMEOUT)
-})
+  if (openNotice.value) noticeTimer = setTimeout(() => (openNotice.value = null), NOTICE_TIMEOUT)
+}
+
+watch(openNotice, restartNoticeTimer)
 
 const stale = computed(() => {
   if (rows.value.length === 0) return null
@@ -41,7 +43,11 @@ const stale = computed(() => {
 </script>
 
 <template>
-  <main class="board" :style="{ '--rows': Math.max(rows.length, 3) }" @click="openNotice = null">
+  <main
+    class="board"
+    :style="{ '--rows': Math.max(rows.length, 3) }" @click="openNotice = null"
+    @pointerdown.capture="restartNoticeTimer"
+  >
     <header class="clock">{{ formatClock(now) }}</header>
 
     <ul v-if="rows.length" class="rows">
