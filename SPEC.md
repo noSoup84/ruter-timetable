@@ -35,7 +35,7 @@ En minimalistisk webapp som viser sanntidsavganger for valgte kollektivlinjer. D
 All data kommer fra Entur JourneyPlanner v3:
 
 - Endepunkt: `POST https://api.entur.io/journey-planner/v3/graphql`
-- Påkrevd header: `ET-Client-Name: andersespedalen-ruter-timetable`
+- Påkrevd header: `ET-Client-Name: nosoup84-ruter-timetable`
 - Ingen nøkkel. CORS er åpent (`Access-Control-Allow-Origin: *`), så appen kaller APIet direkte fra nettleseren.
 - Vi filtrerer ikke på operatør. Togene i Oslo-området kjøres av Vy og andre, ikke Ruter, og de skal være med. Det betyr også at appen virker i resten av landet.
 

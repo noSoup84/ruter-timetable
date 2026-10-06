@@ -2,7 +2,7 @@ import type { BoardRow, TransportMode } from './config'
 
 const JOURNEY_PLANNER = 'https://api.entur.io/journey-planner/v3/graphql'
 const GEOCODER = 'https://api.entur.io/geocoder/v1/autocomplete'
-const CLIENT_NAME = 'andersespedalen-ruter-timetable'
+const CLIENT_NAME = 'nosoup84-ruter-timetable'
 
 /** Departures fetched per row. More than we show, so rows stay full between fetches. */
 const DEPARTURES_PER_ROW = 6
