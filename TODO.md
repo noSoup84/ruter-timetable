@@ -7,7 +7,6 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [ ] Linjenummeret vises to ganger på skjermen, fordi det står både i merket og i det foreslåtte navnet ("54 mot Kjelsås"). Vurder å la navneforslaget droppe nummeret. (2026-10-06)
 - [ ] På config-siden har alle bussmerker rød farge, også regionbusser som skal være grønne. Listen henter ikke linjefarger fra Entur. (2026-10-06)
 - [ ] Test posisjon og holdeplasser i nærheten på et ekte nettbrett over HTTPS. (2026-10-06)
-- [ ] Test import-lenken i nettleseren. (2026-10-06)
 
 ## Ferdig
 
@@ -32,3 +31,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Den blå knappen "Legg til avganger" passer ikke med temaet. Hovedknapper, valgte rader og avkrysningsbokser er nå hvite i stedet for blå. (2026-10-06, 9691b0a)
 - [x] Repoet er pushet til noSoup84/ruter-timetable, og appen kjører på https://nosoup84.github.io/ruter-timetable/ via GitHub Pages. (2026-10-06, 790f8c2)
 - [x] Tannhjulet kom i konflikt med tidene i nederste rad. Det står nå øverst til venstre, og klokka øverst til høyre. (2026-10-06, 7bb918f)
+- [x] Import-lenken er testet på GitHub Pages, både i ny fane og i samme fane, og virker. (2026-10-06)
