@@ -18,3 +18,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Nærhetsgrensen for holdeplasser skal være 250 m, ikke 1 km. (2026-10-06, 1ccdabf)
 - [x] Generell info som "Fra 4. oktober: Buss 54 får økt frekvens" skal ikke vises, bare driftsvarsler. Filtrerer nå på `reportType: incident`. (2026-10-06, f722853)
 - [x] Generell info skal kunne leses ved å trykke på en liten info-knapp som åpner en snakkeboble. (2026-10-06, 65c3f5b)
+- [x] Tavla brukte for lite av skjermen på iPad. Skriften skaleres nå etter både høyde og bredde, og radene fyller høyden. (2026-10-06, COMMIT)

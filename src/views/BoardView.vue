@@ -41,7 +41,7 @@ const stale = computed(() => {
 </script>
 
 <template>
-  <main class="board" @click="openNotice = null">
+  <main class="board" :style="{ '--rows': Math.max(rows.length, 3) }" @click="openNotice = null">
     <header class="clock">{{ formatClock(now) }}</header>
 
     <ul v-if="rows.length" class="rows">
@@ -74,10 +74,39 @@ const stale = computed(() => {
 </template>
 
 <style scoped>
+/*
+ * The font size is the largest that fits both the height and the width.
+ * Height: the clock takes about 3em and each row about 2.8em.
+ * Width: a row needs about 24em (badge, name, three times and a delayed time).
+ * At least 3 rows are assumed, so a short list does not get huge text.
+ */
 .board {
-  min-height: 100vh;
-  padding: 3vmin 4vmin;
-  font-size: clamp(1.25rem, 4.2vmin, 3.5rem);
+  --pad-x: 4vmin;
+  --pad-y: 3vmin;
+  --clock-em: 3;
+  --row-em: 2.8;
+  --row-width-em: 24;
+
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  padding: var(--pad-y) var(--pad-x);
+  font-size: max(
+    1rem,
+    min(
+      calc((100dvh - 2 * var(--pad-y)) / (var(--clock-em) + var(--rows) * var(--row-em))),
+      calc((100vw - 2 * var(--pad-x)) / var(--row-width-em))
+    )
+  );
+  overflow: hidden;
+}
+
+/* In portrait the times go on their own line, so rows are taller and narrower. */
+@media (orientation: portrait) {
+  .board {
+    --row-em: 4;
+    --row-width-em: 17;
+  }
 }
 
 .clock {
@@ -88,9 +117,18 @@ const stale = computed(() => {
 }
 
 .rows {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+/* Rows share the height that is left, so the list fills the screen. */
+.rows > :deep(li) {
+  flex: 1 1 0;
+  max-height: calc(var(--row-em) * 1.6em);
 }
 
 .empty {

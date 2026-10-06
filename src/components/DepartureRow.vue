@@ -195,14 +195,14 @@ const colours = computed(() => (props.result?.found ? props.result.colours : nul
 
 .times {
   display: flex;
-  gap: 0.9em;
+  gap: 0.6em;
   justify-content: flex-end;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
 .time {
-  min-width: 3.6em;
+  min-width: 3.2em;
   text-align: right;
   font-weight: 600;
 }
