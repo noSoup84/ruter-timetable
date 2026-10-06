@@ -10,6 +10,7 @@ const props = defineProps<{
   row: BoardRow
   result: RowResult | undefined
   now: number
+  minutesLimit: number
   noticeOpen: boolean
 }>()
 
@@ -92,7 +93,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
         <span v-if="departure.cancelled" class="cancelled">Innstilt</span>
         <template v-else>
           <s v-if="isDelayed(departure.aimed, departure.expected)" class="aimed">{{ formatClock(departure.aimed) }}</s>
-          {{ showClock ? formatClock(departure.expected) : formatDeparture(departure.expected, now) }}
+          {{ showClock ? formatClock(departure.expected) : formatDeparture(departure.expected, now, minutesLimit) }}
         </template>
       </span>
     </div>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
+import { useConfig } from '../composables/useConfig'
 import { usePosition } from '../composables/usePosition'
 import type { BoardRow, TransportMode } from '../lib/config'
 import {
@@ -30,6 +31,7 @@ interface StopGroup {
   directions: DirectionOption[]
 }
 
+const config = useConfig()
 const position = usePosition()
 const asking = ref(false)
 const loading = ref(false)
@@ -57,12 +59,13 @@ async function loadNearby() {
   error.value = null
   try {
     const coords = await position.getPosition()
-    const stops = (await fetchNearbyStops(coords.latitude, coords.longitude)).slice(0, NEARBY_STOPS)
+    const distance = config.value.nearbyDistance
+    const stops = (await fetchNearbyStops(coords.latitude, coords.longitude, distance)).slice(0, NEARBY_STOPS)
     const directions = await fetchDirections(stops.map((s) => s.id))
     groups.value = stops
       .map((stop) => ({ stop, directions: directions.get(stop.id) ?? [] }))
       .filter((g) => g.directions.length > 0)
-    if (groups.value.length === 0) error.value = 'Fant ingen avganger innen 250 m. Søk etter holdeplassen i stedet.'
+    if (groups.value.length === 0) error.value = `Fant ingen avganger innen ${distance} m. Søk etter holdeplassen i stedet.`
   } catch {
     error.value = 'Fant ikke posisjonen din. Søk etter holdeplassen i stedet.'
   } finally {

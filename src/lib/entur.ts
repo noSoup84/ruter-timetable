@@ -181,11 +181,11 @@ export async function fetchDepartures(rows: BoardRow[], signal?: AbortSignal): P
 
 // Stops
 
-const NEAREST_QUERY = `query ($latitude: Float!, $longitude: Float!) {
+const NEAREST_QUERY = `query ($latitude: Float!, $longitude: Float!, $distance: Float!) {
   nearest(
     latitude: $latitude
     longitude: $longitude
-    maximumDistance: 250
+    maximumDistance: $distance
     maximumResults: 20
     filterByPlaceTypes: [stopPlace]
     filterByModes: [bus, coach, tram, metro, rail, water]
@@ -203,8 +203,8 @@ interface RawNearest {
   nearest: { edges: { node: { distance: number; place: { id?: string; name?: string } | null } }[] }
 }
 
-export async function fetchNearbyStops(latitude: number, longitude: number): Promise<StopOption[]> {
-  const data = await graphql<RawNearest>(NEAREST_QUERY, { latitude, longitude })
+export async function fetchNearbyStops(latitude: number, longitude: number, distance: number): Promise<StopOption[]> {
+  const data = await graphql<RawNearest>(NEAREST_QUERY, { latitude, longitude, distance })
   return data.nearest.edges
     .filter(({ node }) => node.place?.id && node.place.name)
     .map(({ node }) => ({

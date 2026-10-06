@@ -8,6 +8,7 @@ import {
   loadConfig,
   parseConfig,
   saveConfig,
+  validSetting,
   type AppConfig,
 } from './config'
 
@@ -39,6 +40,8 @@ const config: AppConfig = {
     },
   ],
   autoReload: { enabled: false, time: '03:30' },
+  minutesLimit: 15,
+  nearbyDistance: 500,
 }
 
 describe('parseConfig', () => {
@@ -58,6 +61,27 @@ describe('parseConfig', () => {
     expect(parseConfig({ version: 1, rows: [], autoReload: { enabled: true, time: '25:00' } })?.autoReload.time).toBe(
       '04:00',
     )
+  })
+})
+
+describe('number settings', () => {
+  it('uses defaults when missing, so older saved configs still load', () => {
+    const parsed = parseConfig({ version: 1, rows: [] })
+    expect(parsed?.minutesLimit).toBe(30)
+    expect(parsed?.nearbyDistance).toBe(250)
+  })
+
+  it('uses defaults for values outside the limits or not whole numbers', () => {
+    const parsed = parseConfig({ version: 1, rows: [], minutesLimit: 0, nearbyDistance: 250.5 })
+    expect(parsed?.minutesLimit).toBe(30)
+    expect(parsed?.nearbyDistance).toBe(250)
+  })
+
+  it('validates single values', () => {
+    expect(validSetting('minutesLimit', 120)).toBe(120)
+    expect(validSetting('minutesLimit', 121)).toBeNull()
+    expect(validSetting('nearbyDistance', 50)).toBe(50)
+    expect(validSetting('nearbyDistance', Number.NaN)).toBeNull()
   })
 })
 

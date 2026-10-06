@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import AddRows from '../components/AddRows.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
-import { clearConfig, encodeConfig, type BoardRow } from '../lib/config'
+import { LIMITS, clearConfig, encodeConfig, validSetting, type BoardRow } from '../lib/config'
 
 const router = useRouter()
 const config = useConfig()
@@ -88,8 +88,16 @@ async function copyExportUrl() {
  */
 function revealField(event: FocusEvent) {
   const field = event.target
-  if (!(field instanceof HTMLInputElement) || field.readOnly || !['text', 'search'].includes(field.type)) return
+  if (!(field instanceof HTMLInputElement) || field.readOnly || !['text', 'search', 'number'].includes(field.type)) return
   setTimeout(() => field.scrollIntoView({ block: field.type === 'search' ? 'start' : 'center', behavior: 'smooth' }), 300)
+}
+
+/** Saves a number setting if it is valid, otherwise puts the field back to the saved value. */
+function setNumber(key: keyof typeof LIMITS, event: Event) {
+  const field = event.target as HTMLInputElement
+  const value = validSetting(key, field.valueAsNumber)
+  if (value === null) field.value = String(config.value[key])
+  else config.value[key] = value
 }
 
 function reload() {
@@ -150,6 +158,37 @@ function reset() {
       </TransitionGroup>
       <AddRows v-if="adding" :existing="config.rows" @add="add" @cancel="adding = false" />
       <button v-else class="primary" @click="adding = true">Legg til avganger</button>
+    </section>
+
+    <section>
+      <h2>Visning og søk</h2>
+      <div class="settings">
+        <label class="setting">
+          <span>Vis minutter til avgang opp til</span>
+          <input
+            type="number"
+            inputmode="numeric"
+            :min="LIMITS.minutesLimit.min"
+            :max="LIMITS.minutesLimit.max"
+            :value="config.minutesLimit"
+            @change="setNumber('minutesLimit', $event)"
+          />
+          <span>minutter, deretter klokkeslett</span>
+        </label>
+        <label class="setting">
+          <span>Vis holdeplasser i nærheten innen</span>
+          <input
+            type="number"
+            inputmode="numeric"
+            step="50"
+            :min="LIMITS.nearbyDistance.min"
+            :max="LIMITS.nearbyDistance.max"
+            :value="config.nearbyDistance"
+            @change="setNumber('nearbyDistance', $event)"
+          />
+          <span>meter</span>
+        </label>
+      </div>
     </section>
 
     <section>
@@ -284,6 +323,24 @@ h2 {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.setting {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.setting input {
+  width: 6rem;
+  text-align: right;
 }
 
 .reload {

@@ -57,6 +57,7 @@ const stale = computed(() => {
         :row="row"
         :result="results.get(row.id)"
         :now="now"
+        :minutes-limit="config.minutesLimit"
         :notice-open="openNotice === row.id"
         @toggle-notice="toggleNotice(row.id)"
       />

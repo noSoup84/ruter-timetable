@@ -50,7 +50,7 @@ Holdeplasser i nærheten av en posisjon:
   nearest(
     latitude: 59.9045
     longitude: 10.7864
-    maximumDistance: 250
+    maximumDistance: $distance  # fra config, standard 250
     filterByPlaceTypes: [stopPlace]
     filterByModes: [bus, tram, metro, rail, water]
   ) {
@@ -163,8 +163,10 @@ Basert på `expectedDepartureTime` minus nåtid:
 | Tid til avgang | Visning |
 | --- | --- |
 | Under 1 minutt | `nå` |
-| 1 til 30 minutter | `X m` (avrundet ned) |
-| Over 30 minutter | `HH:MM` |
+| 1 til N minutter | `X m` (avrundet ned) |
+| Over N minutter | `HH:MM` |
+
+N er `minutesLimit` i config, standard 30.
 
 Avganger som har gått, fjernes fra visningen lokalt uten å vente på neste henting.
 
@@ -211,7 +213,7 @@ Config-siden er laget for berøring på nettbrett: større tekst, knapper og avk
 Flere avganger fra flere holdeplasser legges til i én operasjon, ved å krysse av i en liste.
 
 1. Første gang i et besøk spør appen om den skal bruke posisjonen din. Hvis nettleseren allerede har gitt tillatelse, hoppes spørsmålet over.
-2. Med posisjon: appen viser de 10 nærmeste holdeplassene innen 250 m, sortert på avstand. Under hver holdeplass står alle linjer og retninger derfra, med avkrysningsboks. Alt hentes i én spørring mot Entur.
+2. Med posisjon: appen viser de 10 nærmeste holdeplassene innen `nearbyDistance` meter (standard 250 m), sortert på avstand. Under hver holdeplass står alle linjer og retninger derfra, med avkrysningsboks. Alt hentes i én spørring mot Entur.
 3. Over listen er det et søkefelt. Et treff i søket legges øverst i listen som en ny holdeplass med sine retninger. Uten posisjon starter listen tom, og søket er eneste vei inn.
 4. Filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje) gjelder hele listen. Bare transportmidler som finnes i listen, vises.
 5. Retninger som allerede er lagt til, er avkrysset, grået ut og merket "Lagt til".
@@ -228,6 +230,7 @@ Eksempel: hjemme ved Kværnerbyen krysser man av 54 fra Kværnerbyen og 70 og 34
 
 ### Andre innstillinger
 
+- Visning og søk: hvor mange minutter til avgang som vises som "X m" før det byttes til klokkeslett (1 til 120, standard 30), og hvor langt unna holdeplasser regnes som i nærheten (50 til 2000 m, standard 250). Ugyldige verdier blir ikke lagret, og feltet går tilbake til forrige verdi. Mangler verdiene i et lagret oppsett, brukes standardverdiene.
 - Automatisk omlasting: av/på og klokkeslett.
 - Knapp "Last inn siden på nytt".
 - Knapp "Tilbakestill alt", med bekreftelse. Den sletter oppsettet i localStorage, glemmer svaret om posisjon og laster forsiden på nytt. Nyttig ved testing. Tillatelsen nettleseren har gitt til posisjon, kan ikke fjernes fra JavaScript, og må fjernes i nettleserens innstillinger for nettstedet.
@@ -256,7 +259,9 @@ Oppsettet lagres i `localStorage` under én nøkkel, med versjonsnummer slik at 
       "stopName": "Kværnerbyen"
     }
   ],
-  "autoReload": { "enabled": true, "time": "04:00" }
+  "autoReload": { "enabled": true, "time": "04:00" },
+  "minutesLimit": 30,
+  "nearbyDistance": 250
 }
 ```
 
@@ -268,7 +273,7 @@ Ugyldig eller manglende oppsett gir en tom avgangsvisning med en lenke til confi
 
 Enhetstester med Vitest for:
 
-- Tidsformatet (`nå`, `X m`, `HH:MM`, grensene på 1 og 30 minutter).
+- Tidsformatet (`nå`, `X m`, `HH:MM`, grensene på 1 minutt og `minutesLimit`).
 - Forsinkelse og innstilling.
 - Fjerning av avganger som har gått.
 - Lesing, validering og migrering av oppsett fra `localStorage`.
