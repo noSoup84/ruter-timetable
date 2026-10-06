@@ -32,4 +32,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Repoet er pushet til noSoup84/ruter-timetable, og appen kjører på https://nosoup84.github.io/ruter-timetable/ via GitHub Pages. (2026-10-06, 790f8c2)
 - [x] Tannhjulet kom i konflikt med tidene i nederste rad. Det står nå øverst til venstre, og klokka øverst til høyre. (2026-10-06, 7bb918f)
 - [x] Import-lenken er testet på GitHub Pages, både i ny fane og i samme fane, og virker. (2026-10-06)
-- [x] Sikkerhetsgjennomgang (`SECURITY-REVIEW.md`): begrenset Pages-tilganger til deploy-jobben, egen concurrency-gruppe per gren, maks 50 rader og 200 tegn i oppsettet, og CSP i produksjonsbygget. Fester ikke actions til commit-SHA. (2026-10-06, COMMIT)
+- [x] Sikkerhetsgjennomgang (`SECURITY-REVIEW.md`): begrenset Pages-tilganger til deploy-jobben, egen concurrency-gruppe per gren, maks 50 rader og 200 tegn i oppsettet, og CSP i produksjonsbygget. Fester ikke actions til commit-SHA. (2026-10-06, e071e32)
