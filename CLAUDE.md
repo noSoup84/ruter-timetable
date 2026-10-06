@@ -50,11 +50,11 @@ Run `npx vue-tsc -b` and `npm test` before every commit.
 
 ## Feedback workflow
 
-The user gives feedback in Norwegian. For each item:
+The user gives feedback in Norwegian or English. For each item:
 
-1. Add it to `TODO.md`, in English, under "Done" with the date and `COMMIT` as a placeholder, or under "Open" if it is not done yet.
-2. Update `SPEC.md` if the behaviour changes.
-3. Commit the change. Then replace `COMMIT` in `TODO.md` with the short hash and commit that as "Link feedback item to commit".
+1. Update `SPEC.md` if the behaviour changes.
+2. `TODO.md` lists only open issues. Add an item there if it can't be done now, and remove it when it is done. Don't keep a history of finished items. Git has that.
+3. Commit when the change is done, unless the user asks to test it first.
 
 Check UI changes in a real browser, not only with tests. Headless Chrome through the DevTools protocol works well for screenshots, for example at iPad sizes 1024x768 and 768x1024.
 

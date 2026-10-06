@@ -53,21 +53,24 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
 
 <template>
   <li ref="rowElement" class="row">
-    <button
-      v-if="rowNotices.length"
-      class="badge-button"
-      :aria-expanded="noticeOpen"
-      :aria-label="t('row.showInfo')"
-      @click.stop="emit('toggleNotice')"
-    >
-      <LineBadge class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
-      <svg class="info" viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="12" cy="12" r="12" fill="#f5c400" />
-        <circle cx="12" cy="6.8" r="1.9" fill="#000" />
-        <rect x="10.3" y="10.2" width="3.4" height="8.6" rx="1.2" fill="#000" />
-      </svg>
-    </button>
-    <LineBadge v-else class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
+    <div class="line">
+      <span class="stop">{{ row.stopName }}</span>
+      <button
+        v-if="rowNotices.length"
+        class="badge-button"
+        :aria-expanded="noticeOpen"
+        :aria-label="t('row.showInfo')"
+        @click.stop="emit('toggleNotice')"
+      >
+        <LineBadge class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
+        <svg class="info" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="12" fill="#f5c400" />
+          <circle cx="12" cy="6.8" r="1.9" fill="#000" />
+          <rect x="10.3" y="10.2" width="3.4" height="8.6" rx="1.2" fill="#000" />
+        </svg>
+      </button>
+      <LineBadge v-else class="badge" :mode="row.transportMode" :public-code="row.publicCode" :colours="colours" />
+    </div>
     <div v-if="noticeOpen && rowNotices.length" class="bubble" :class="{ above: bubbleAbove }" @click.stop>
       <div v-for="notice in rowNotices" :key="JSON.stringify(notice.summary)" class="notice">
         <p class="notice-summary">{{ text(notice.summary) }}</p>
@@ -115,7 +118,10 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
 .row {
   position: relative;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  /* Columns come from the list in BoardView, so the badge column is as wide as
+     the widest stop name on any row, and the row names line up. */
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   align-items: center;
   gap: 0 0.6em;
   padding: 0.45em 0;
@@ -131,6 +137,22 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* The stop name sits above the badge. */
+.line {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.stop {
+  /* Room for the info marker, which sticks out above the badge. Same on every row, so they line up. */
+  margin-bottom: 0.6em;
+  font-size: 0.5em;
+  color: var(--dim);
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .badge-button {

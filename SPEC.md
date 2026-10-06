@@ -152,11 +152,13 @@ We fetch 6 departures and show 3, so a row still has 3 departures when the first
 - Dark background with light text. No light mode.
 - Large clock in the top right corner, in the chosen time format. No date.
 - One column of rows, in the order the user has set in config.
-- The board fills the whole screen. The font size is the largest that fits both the height (clock and all rows) and the width (badge, name and three times). At least 3 rows are assumed, so a short list doesn't get huge text. The rows share the height that is left.
+- The board fills the whole screen. The font size is the largest that fits both the height (clock, all rows and extra room for rows with a service alert) and the width (badge, name and three times). At least 3 rows are assumed, so a short list doesn't get huge text. The rows share the height that is left.
+- If the rows still don't fit, for example with very many rows, the list scrolls by touch. There is no visible scrollbar.
 - A small, faint gear in the top left corner opens `/config`. It sits at the top so it doesn't get in the way of the times on the bottom row.
 
 ### A row
 
+- The stop name in small, faint text above the line badge. The badge column is as wide as the longest stop name on the board, so the row names line up.
 - Line badge with the line number, in the line's colour from `presentation.colour` and `presentation.textColour` in the API. For Ruter that is red for city buses, green for regional buses, orange for the metro, blue for trams and purple for boats. Trains have Vy's colours. If the field is missing, a fallback per transport mode is used (see below).
 - The row's name, chosen by the user (for example "54 mot Kjelsås").
 - Up to 3 upcoming departures.

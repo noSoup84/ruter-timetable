@@ -6,6 +6,7 @@ import { useConfig } from '../composables/useConfig'
 import { useDepartures } from '../composables/useDepartures'
 import { useI18n } from '../composables/useI18n'
 import { useNow } from '../composables/useNow'
+import { firstSituation } from '../lib/departures'
 import { formatClock } from '../lib/format'
 
 /** Show "last updated" after this long without a successful fetch. */
@@ -18,6 +19,15 @@ const now = useNow()
 const { results, lastSuccess } = useDepartures(rows)
 useAutoReload()
 const startedAt = Date.now()
+
+/** Rows with a service alert are taller, since the alert text wraps under the name. */
+const alertRows = computed(
+  () =>
+    rows.value.filter((row) => {
+      const result = results.value.get(row.id)
+      return result?.found && firstSituation(result.departures) !== null
+    }).length,
+)
 
 /** Close the info bubble when the screen has not been tapped for this long. */
 const NOTICE_TIMEOUT = 10_000
@@ -48,7 +58,7 @@ const stale = computed(() => {
   <main
     class="board"
     :class="{ 'clock-12h': config.clockFormat === '12h' }"
-    :style="{ '--rows': Math.max(rows.length, 3) }"
+    :style="{ '--rows': Math.max(rows.length, 3), '--alert-rows': alertRows }"
     @click="openNotice = null"
     @pointerdown.capture="restartNoticeTimer"
   >
@@ -90,7 +100,8 @@ const stale = computed(() => {
 <style scoped>
 /*
  * The font size is the largest that fits both the height and the width.
- * Height: the clock takes about 3em and each row about 2.8em.
+ * Height: the clock takes about 3em, each row about 3.3em with the stop name above the badge,
+ * and a row with a service alert about 1.6em more.
  * Width: a row needs about 24em (badge, name, three times and a delayed time).
  * At least 3 rows are assumed, so a short list does not get huge text.
  */
@@ -98,7 +109,9 @@ const stale = computed(() => {
   --pad-x: 4vmin;
   --pad-y: 3vmin;
   --clock-em: 3;
-  --row-em: 2.8;
+  --row-em: 3.3;
+  /* Extra height for a row with a service alert, about three lines of small text. */
+  --alert-em: 1.6;
   --row-width-em: 24;
 
   display: flex;
@@ -108,7 +121,10 @@ const stale = computed(() => {
   font-size: max(
     1rem,
     min(
-      calc((100dvh - 2 * var(--pad-y)) / (var(--clock-em) + var(--rows) * var(--row-em))),
+      calc(
+        (100dvh - 2 * var(--pad-y)) /
+          (var(--clock-em) + var(--rows) * var(--row-em) + var(--alert-rows) * var(--alert-em))
+      ),
       calc((100vw - 2 * var(--pad-x)) / var(--row-width-em))
     )
   );
@@ -123,7 +139,7 @@ const stale = computed(() => {
 /* In portrait the times go on their own line, so rows are taller and narrower. */
 @media (orientation: portrait) {
   .board {
-    --row-em: 4;
+    --row-em: 4.6;
     --row-width-em: 17;
   }
 }
@@ -148,25 +164,30 @@ const stale = computed(() => {
   line-height: 1.2;
 }
 
+/*
+ * One grid for all rows: badge, name and times. Rows share the height that is
+ * left, up to a cap, but a row with a wrapped service alert grows to fit it.
+ */
 .rows {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-auto-rows: minmax(min-content, 1fr);
+  column-gap: 0.6em;
   flex: 1;
+  min-height: 0;
+  /* Caps the row height when there are only a few rows. */
+  max-height: calc(var(--rows) * var(--row-em) * 1.6em);
+  /* Too many rows, or long alerts, scroll by touch. No scrollbar, since it is a wall display. */
+  overflow-y: auto;
+  scrollbar-width: none;
   list-style: none;
-  margin: 0;
-  padding: 0;
+  /* The scroll container clips, so leave room for the info marker that sticks out left of the badge. */
+  margin: 0 0 0 -0.4em;
+  padding: 0 0 0 0.4em;
 }
 
-/* Rows share the height that is left, so the list fills the screen. */
-.rows > :deep(li) {
-  flex: 1 1 0;
-  max-height: calc(var(--row-em) * 1.6em);
-}
-
-/* A service alert wraps over several lines, so its row may grow past the cap. */
-.rows > :deep(li:has(.situation)) {
-  flex-shrink: 0;
-  max-height: none;
+.rows::-webkit-scrollbar {
+  display: none;
 }
 
 .empty {
