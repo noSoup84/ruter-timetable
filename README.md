@@ -1,23 +1,23 @@
-# Ruter avgangstavle
+# Ruter departure board
 
-Viser sanntidsavganger fra Entur på et nettbrett. Se `SPEC.md` for hva appen gjør.
+Shows real-time departures from Entur on a tablet. See `SPEC.md` for what the app does.
 
 ```sh
 npm install
-npm run dev     # utviklingsserver på http://localhost:5173/ruter-timetable/
-npm test        # enhetstester
-npm run build   # bygger til dist/
+npm run dev     # dev server on http://localhost:5173/ruter-timetable/
+npm test        # unit tests
+npm run build   # builds to dist/
 ```
 
-Push til `main` kjører tester og deployer til GitHub Pages på https://nosoup84.github.io/ruter-timetable/. Under Settings > Pages i repoet må "Source" være satt til "GitHub Actions".
+A push to `main` runs the tests and deploys to GitHub Pages at https://nosoup84.github.io/ruter-timetable/. In the repository, Settings > Pages > Source must be set to "GitHub Actions".
 
-## Entur-klientnavn
+## Entur client name
 
-Entur krever at alle kall har headeren `ET-Client-Name` i formatet `<firma>-<applikasjon>`. Appen leser den fra `VITE_ENTUR_CLIENT_NAME` ved bygg.
+Entur requires every request to have an `ET-Client-Name` header in the format `<company>-<application>`. The app reads it from `VITE_ENTUR_CLIENT_NAME` at build time.
 
-- GitHub Actions setter den til `<repo-eier>-ruter-timetable`. Hvis du forker repoet, får du derfor ditt eget navn automatisk. Vil du ha et annet navn, legg inn variabelen `ENTUR_CLIENT_NAME` under Settings > Secrets and variables > Actions > Variables.
-- Lokalt kan du legge den i `.env.local`, for eksempel `VITE_ENTUR_CLIENT_NAME=dittnavn-ruter-timetable`. Uten den brukes `unnamed-ruter-timetable`.
+- GitHub Actions sets it to `<repo-owner>-ruter-timetable`, so a fork gets its own name automatically. To use another name, add the variable `ENTUR_CLIENT_NAME` under Settings > Secrets and variables > Actions > Variables.
+- Locally you can put it in `.env.local`, for example `VITE_ENTUR_CLIENT_NAME=yourname-ruter-timetable`. Without it, `unnamed-ruter-timetable` is used.
 
-## Sti på GitHub Pages
+## GitHub Pages path
 
-GitHub Pages viser appen under `/<repo-navn>/`. GitHub Actions setter derfor `BASE_PATH` fra navnet på repoet, slik at en fork med et annet navn også virker. Bruker du eget domene, setter du variabelen `BASE_PATH` til `/` under Settings > Secrets and variables > Actions > Variables. Lokalt brukes `/ruter-timetable/`.
+GitHub Pages serves the app under `/<repo-name>/`. GitHub Actions sets `BASE_PATH` from the repository name, so a fork with another name also works. With a custom domain, set the variable `BASE_PATH` to `/` under Settings > Secrets and variables > Actions > Variables. Locally, `/ruter-timetable/` is used.

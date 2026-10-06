@@ -1,38 +1,39 @@
-# Todo og feedback
+# Todo and feedback
 
-Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt er gjort, flyttes det til "Ferdig" med dato og commit.
+Feedback and tasks for the app. New items go under "Open". When an item is done, it moves to "Done" with the date and commit.
 
-## Åpne
+## Open
 
-- [ ] Linjenummeret vises to ganger på skjermen, fordi det står både i merket og i det foreslåtte navnet ("54 mot Kjelsås"). Vurder å la navneforslaget droppe nummeret. (2026-10-06)
-- [ ] På config-siden har alle bussmerker rød farge, også regionbusser som skal være grønne. Listen henter ikke linjefarger fra Entur. (2026-10-06)
-- [ ] Test posisjon og holdeplasser i nærheten på et ekte nettbrett over HTTPS. (2026-10-06)
+- [ ] The line number shows twice on the board, because it is both in the badge and in the suggested name ("54 mot Kjelsås"). Consider dropping the number from the suggested name. (2026-10-06)
+- [ ] On the config page all bus badges are red, including regional buses that should be green. The list does not fetch line colours from Entur. (2026-10-06)
+- [ ] Test location and nearby stops on a real tablet over HTTPS. (2026-10-06)
 
-## Ferdig
+## Done
 
-- [x] Spørsmålet om posisjon kom hver gang man la til en avgang. Nå spørres det maks én gang per besøk, og ikke i det hele tatt hvis nettleseren allerede har gitt tillatelse. (2026-10-06, 7ddc08d)
-- [x] Man måtte gå gjennom hele flyten for hver avgang. Nå viser "Legg til avganger" alle holdeplasser og retninger i nærheten med avkrysningsbokser, så flere avganger fra flere holdeplasser legges til i én operasjon. (2026-10-06, 7ddc08d)
-- [x] Config-siden trenger en knapp som fjerner alle innstillinger og posisjonsdeling og sender deg til forsiden. Nettleserens egen posisjonstillatelse kan ikke fjernes fra appen. (2026-10-06, ead35e3)
-- [x] Nærhetsgrensen for holdeplasser skal være 250 m, ikke 1 km. (2026-10-06, 067adf7)
-- [x] Generell info som "Fra 4. oktober: Buss 54 får økt frekvens" skal ikke vises, bare driftsvarsler. Filtrerer nå på `reportType: incident`. (2026-10-06, 3687428)
-- [x] Generell info skal kunne leses ved å trykke på en liten info-knapp som åpner en snakkeboble. (2026-10-06, cf00734)
-- [x] Tavla brukte for lite av skjermen på iPad. Skriften skaleres nå etter både høyde og bredde, og radene fyller høyden. (2026-10-06, 510fa54)
-- [x] Info-knappen flyttes til en liten hvit sirkel med sort "i" i hjørnet av linjemerket, og trykk på merket åpner boblen. Det sparer plass i bredden. (2026-10-06, 6d41525)
-- [x] Trykk på tidene viser dem som klokkeslett (HH:MM) i 5 sekunder. (2026-10-06, 6d41525)
-- [x] Info-indikatoren så ikke bra ut, og skal være gul. Den er nå et SVG-ikon, gul sirkel med sort "i". (2026-10-06, ef2b963)
-- [x] Info-boblen skal ha hvit kant. (2026-10-06, 33569b8)
-- [x] Info-boblen skal lukkes av seg selv etter 10 sekunder uten trykk. (2026-10-06, 0b86eb9)
-- [x] Info-boblen på nederste rad havnet utenfor skjermen. Rader i nedre halvdel åpner den nå oppover. (2026-10-06, 0b86eb9)
-- [x] Config-siden skal være tilpasset nettbrett og ha plass til virtuelt tastatur. "Tilbake til avganger" skal være en knapp til venstre. (2026-10-06, 4dea93f)
-- [x] "min" skrives som "m", for eksempel "5 m". (2026-10-06, 4dea93f)
-- [x] Pilknappene for å flytte avganger erstattes med dra og slipp. (2026-10-06, 57f41d8)
-- [x] Knappen "Last inn siden på nytt" flyttes til samme linje som klokkeslettet for automatisk omlasting, til høyre for feltet. (2026-10-06, 57f41d8)
-- [x] Grensen for når minutter byttes til klokkeslett, og nærhetsgrensen for holdeplasser (standard 250 m), skal kunne endres i config. (2026-10-06, 9691b0a)
-- [x] Den blå knappen "Legg til avganger" passer ikke med temaet. Hovedknapper, valgte rader og avkrysningsbokser er nå hvite i stedet for blå. (2026-10-06, 9691b0a)
-- [x] Repoet er pushet til noSoup84/ruter-timetable, og appen kjører på https://nosoup84.github.io/ruter-timetable/ via GitHub Pages. (2026-10-06, 790f8c2)
-- [x] Tannhjulet kom i konflikt med tidene i nederste rad. Det står nå øverst til venstre, og klokka øverst til høyre. (2026-10-06, 7bb918f)
-- [x] Import-lenken er testet på GitHub Pages, både i ny fane og i samme fane, og virker. (2026-10-06)
-- [x] Sikkerhetsgjennomgang (`SECURITY-REVIEW.md`): begrenset Pages-tilganger til deploy-jobben, egen concurrency-gruppe per gren, maks 50 rader og 200 tegn i oppsettet, og CSP i produksjonsbygget. Fester ikke actions til commit-SHA. (2026-10-06, e071e32)
-- [x] Siden mangler favicon. Har nå et SVG-ikon (tre linjemerker i rødt, blått og oransje med hvite streker på sort) og et 180 px PNG-ikon for "Legg til på Hjem-skjerm" på iPad. (2026-10-06, 9db2b8b)
-- [x] Entur-klientnavnet skal ikke være hardkodet, siden repoet kan forkes. Settes nå ved bygg fra repo-eieren i GitHub Actions. (2026-10-06, d9f826e)
-- [x] Stien på GitHub Pages var hardkodet som `/ruter-timetable/`. Settes nå fra navnet på repoet ved bygg, eller fra variabelen `BASE_PATH`. (2026-10-06, 02b725e)
+- [x] The location question came up every time a departure was added. It is now asked at most once per visit, and not at all if the browser already has permission. (2026-10-06, 7ddc08d)
+- [x] You had to go through the whole flow for each departure. "Legg til avganger" (add departures) now lists all nearby stops and directions with checkboxes, so several departures from several stops are added in one go. (2026-10-06, 7ddc08d)
+- [x] The config page needs a button that removes all settings and location sharing and sends you to the board. The browser's own location permission cannot be removed from the app. (2026-10-06, ead35e3)
+- [x] The nearby limit for stops should be 250 m, not 1 km. (2026-10-06, 067adf7)
+- [x] General notices like "Fra 4. oktober: Buss 54 får økt frekvens" should not show, only service alerts. Now filters on `reportType: incident`. (2026-10-06, 3687428)
+- [x] General notices should be readable by tapping a small info button that opens a speech bubble. (2026-10-06, cf00734)
+- [x] The board used too little of the screen on iPad. The font now scales to both height and width, and the rows fill the height. (2026-10-06, 510fa54)
+- [x] The info button moves to a small white circle with a black "i" in the corner of the line badge, and tapping the badge opens the bubble. This saves horizontal space. (2026-10-06, 6d41525)
+- [x] Tapping the times shows them as clock time (HH:MM) for 5 seconds. (2026-10-06, 6d41525)
+- [x] The info marker did not look good and should be yellow. It is now an SVG icon, a yellow circle with a black "i". (2026-10-06, ef2b963)
+- [x] The info bubble should have a white border. (2026-10-06, 33569b8)
+- [x] The info bubble should close by itself after 10 seconds without a tap. (2026-10-06, 0b86eb9)
+- [x] The info bubble on the bottom row ended up off screen. Rows in the lower half now open it upwards. (2026-10-06, 0b86eb9)
+- [x] The config page should be adapted to tablets and leave room for the virtual keyboard. "Tilbake til avganger" (back to departures) should be a button on the left. (2026-10-06, 4dea93f)
+- [x] "min" is written as "m", for example "5 m". (2026-10-06, 4dea93f)
+- [x] The arrow buttons for moving departures are replaced with drag and drop. (2026-10-06, 57f41d8)
+- [x] The "Last inn siden på nytt" (reload page) button moves to the same line as the auto reload time, to the right of the field. (2026-10-06, 57f41d8)
+- [x] The limit for switching from minutes to clock time, and the nearby limit for stops (default 250 m), should be configurable. (2026-10-06, 9691b0a)
+- [x] The blue "Legg til avganger" button does not fit the theme. Main buttons, selected rows and checkboxes are now white instead of blue. (2026-10-06, 9691b0a)
+- [x] The repository is pushed to noSoup84/ruter-timetable, and the app runs at https://nosoup84.github.io/ruter-timetable/ on GitHub Pages. (2026-10-06, 790f8c2)
+- [x] The gear clashed with the times on the bottom row. It is now in the top left corner, and the clock is in the top right. (2026-10-06, 7bb918f)
+- [x] The import link is tested on GitHub Pages, in a new tab and in the same tab, and works. (2026-10-06)
+- [x] Security review (`SECURITY-REVIEW.md`): limited Pages permissions to the deploy job, a concurrency group per branch, at most 50 rows and 200 characters in the config, and a CSP in the production build. Actions are not pinned to commit SHAs. (2026-10-06, e071e32)
+- [x] The site has no favicon. It now has an SVG icon (three line badges in red, blue and orange with white bars on black) and a 180 px PNG icon for "Add to Home Screen" on iPad. (2026-10-06, 9db2b8b)
+- [x] The Entur client name should not be hardcoded, since the repository can be forked. It is now set at build time from the repository owner in GitHub Actions. (2026-10-06, d9f826e)
+- [x] The GitHub Pages path was hardcoded as `/ruter-timetable/`. It is now set at build time from the repository name, or from the `BASE_PATH` variable. (2026-10-06, 02b725e)
+- [x] README.md, SPEC.md and TODO.md should be in English. (2026-10-06, COMMIT)
