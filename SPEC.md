@@ -141,10 +141,10 @@ Vi henter 6 avganger og viser 3, slik at raden fortsatt har 3 avganger når de f
 ### Layout
 
 - Mørk bakgrunn med lys tekst. Ingen lys modus.
-- Stor klokke øverst (HH:MM). Ingen dato.
+- Stor klokke øverst til høyre (HH:MM). Ingen dato.
 - Én kolonne med rader, i rekkefølgen brukeren har satt i config.
 - Tavla fyller hele skjermen. Skriftstørrelsen er den største som får plass både i høyden (klokke og alle rader) og i bredden (merke, navn og tre tider). Det regnes med minst 3 rader, slik at en kort liste ikke gir enorm tekst. Radene deler høyden som er igjen.
-- Et lite, svakt synlig tannhjul i et hjørne åpner `/config`.
+- Et lite, svakt synlig tannhjul øverst til venstre åpner `/config`. Det står øverst slik at det ikke kommer i veien for tidene i nederste rad.
 
 ### En rad
 

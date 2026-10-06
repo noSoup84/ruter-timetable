@@ -45,10 +45,21 @@ const stale = computed(() => {
 <template>
   <main
     class="board"
-    :style="{ '--rows': Math.max(rows.length, 3) }" @click="openNotice = null"
+    :style="{ '--rows': Math.max(rows.length, 3) }"
+    @click="openNotice = null"
     @pointerdown.capture="restartNoticeTimer"
   >
-    <header class="clock">{{ formatClock(now) }}</header>
+    <header class="top">
+      <RouterLink to="/config" class="settings" aria-label="Innstillinger">
+        <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="3" />
+          <path
+            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
+          />
+        </svg>
+      </RouterLink>
+      <div class="clock">{{ formatClock(now) }}</div>
+    </header>
 
     <ul v-if="rows.length" class="rows">
       <DepartureRow
@@ -69,14 +80,6 @@ const stale = computed(() => {
 
     <footer v-if="stale" class="stale">{{ stale }}</footer>
 
-    <RouterLink to="/config" class="settings" aria-label="Innstillinger">
-      <svg viewBox="0 0 24 24" width="100%" height="100%" fill="none" stroke="currentColor" stroke-width="1.5">
-        <circle cx="12" cy="12" r="3" />
-        <path
-          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"
-        />
-      </svg>
-    </RouterLink>
   </main>
 </template>
 
@@ -116,11 +119,18 @@ const stale = computed(() => {
   }
 }
 
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.3em;
+}
+
 .clock {
   font-size: 2em;
   font-weight: 300;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 0.3em;
+  line-height: 1.2;
 }
 
 .rows {
@@ -151,11 +161,9 @@ const stale = computed(() => {
 }
 
 .settings {
-  position: fixed;
-  right: 3vmin;
-  bottom: 3vmin;
   width: clamp(1.5rem, 4vmin, 2.5rem);
   height: clamp(1.5rem, 4vmin, 2.5rem);
+  margin-top: 0.3em;
   color: var(--faint);
   cursor: pointer;
 }
