@@ -41,4 +41,4 @@ Feedback and tasks for the app. New items go under "Open". When an item is done,
 - [x] CLAUDE.md had personal account details that forks would inherit. They are now in a git-ignored CLAUDE.local.md, and CLAUDE.md is generic. (2026-10-06, f1b9caa)
 - [x] Localization: switch the app between Norwegian (default) and English with flag buttons on the config page. Entur notices follow the language where Entur has a translation. (2026-10-06, d706959)
 - [x] Time format option on the config page: 24-hour (default) or 12-hour. (2026-10-06, d706959)
-- [x] The time format buttons should show only "24h" and "12h", without example times. (2026-10-06, COMMIT)
+- [x] The time format buttons should show only "24h" and "12h", without example times. (2026-10-06, 2b26e6d)
