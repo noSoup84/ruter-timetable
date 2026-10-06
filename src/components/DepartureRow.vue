@@ -135,7 +135,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   left: 0;
   width: min(36em, 85vw);
   padding: 0.7em 0.9em;
-  border: 1px solid var(--border);
+  border: 1px solid #fff;
   border-radius: 0.5em;
   background: var(--surface);
   box-shadow: 0 0.5em 2em rgb(0 0 0 / 0.7);
@@ -143,7 +143,7 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   font-weight: 400;
 }
 
-/* The tail of the speech bubble, pointing up at the name. */
+/* The tail of the speech bubble, pointing up at the badge. */
 .bubble::before {
   content: '';
   position: absolute;
@@ -152,8 +152,8 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
   width: 1em;
   height: 1em;
   background: var(--surface);
-  border-left: 1px solid var(--border);
-  border-top: 1px solid var(--border);
+  border-left: 1px solid #fff;
+  border-top: 1px solid #fff;
   transform: rotate(45deg);
 }
 
