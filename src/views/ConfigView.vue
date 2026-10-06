@@ -204,7 +204,7 @@ function reset() {
               :aria-pressed="config.clockFormat === format"
               @click="config.clockFormat = format"
             >
-              {{ format === '24h' ? '24h · 14:05' : '12h · 2:05 PM' }}
+              {{ format }}
             </button>
           </div>
         </div>
