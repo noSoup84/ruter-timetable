@@ -12,5 +12,5 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 
 ## Ferdig
 
-- [x] Spørsmålet om posisjon kom hver gang man la til en avgang. Nå spørres det maks én gang per besøk, og ikke i det hele tatt hvis nettleseren allerede har gitt tillatelse. (2026-10-06, COMMIT)
-- [x] Man måtte gå gjennom hele flyten for hver avgang. Nå viser "Legg til avganger" alle holdeplasser og retninger i nærheten med avkrysningsbokser, så flere avganger fra flere holdeplasser legges til i én operasjon. (2026-10-06, COMMIT)
+- [x] Spørsmålet om posisjon kom hver gang man la til en avgang. Nå spørres det maks én gang per besøk, og ikke i det hele tatt hvis nettleseren allerede har gitt tillatelse. (2026-10-06, 892f297)
+- [x] Man måtte gå gjennom hele flyten for hver avgang. Nå viser "Legg til avganger" alle holdeplasser og retninger i nærheten med avkrysningsbokser, så flere avganger fra flere holdeplasser legges til i én operasjon. (2026-10-06, 892f297)
