@@ -22,4 +22,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Info-knappen flyttes til en liten hvit sirkel med sort "i" i hjørnet av linjemerket, og trykk på merket åpner boblen. Det sparer plass i bredden. (2026-10-06, 413699b)
 - [x] Trykk på tidene viser dem som klokkeslett (HH:MM) i 5 sekunder. (2026-10-06, 413699b)
 - [x] Info-indikatoren så ikke bra ut, og skal være gul. Den er nå et SVG-ikon, gul sirkel med sort "i". (2026-10-06, 3985746)
-- [x] Info-boblen skal ha hvit kant. (2026-10-06, COMMIT)
+- [x] Info-boblen skal ha hvit kant. (2026-10-06, 6c42f88)
