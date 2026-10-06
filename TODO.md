@@ -33,3 +33,4 @@ Feedback og oppgaver for appen. Nye punkter legges under "Åpne". Når et punkt 
 - [x] Tannhjulet kom i konflikt med tidene i nederste rad. Det står nå øverst til venstre, og klokka øverst til høyre. (2026-10-06, 7bb918f)
 - [x] Import-lenken er testet på GitHub Pages, både i ny fane og i samme fane, og virker. (2026-10-06)
 - [x] Sikkerhetsgjennomgang (`SECURITY-REVIEW.md`): begrenset Pages-tilganger til deploy-jobben, egen concurrency-gruppe per gren, maks 50 rader og 200 tegn i oppsettet, og CSP i produksjonsbygget. Fester ikke actions til commit-SHA. (2026-10-06, e071e32)
+- [x] Siden mangler favicon. Har nå et SVG-ikon (tre linjemerker i rødt, blått og oransje med hvite streker på sort) og et 180 px PNG-ikon for "Legg til på Hjem-skjerm" på iPad. (2026-10-06, COMMIT)
