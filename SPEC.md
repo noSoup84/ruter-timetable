@@ -269,6 +269,14 @@ Oppsettet lagres i `localStorage` under én nøkkel, med versjonsnummer slik at 
 
 Ugyldig eller manglende oppsett gir en tom avgangsvisning med en lenke til config-siden.
 
+Oppsettet kan ha maks 50 rader, og tekstfelt kan være maks 200 tegn. Et oppsett som bryter grensene, blir avvist både ved import og ved lasting fra localStorage. Config-siden lar deg ikke legge til flere enn 50 rader. Grensen hindrer at en laget import-lenke får tavla til å sende en enorm spørring til Entur hvert 30. sekund.
+
+## Sikkerhet
+
+- Produksjonsbygget har en Content Security Policy i en meta-tag, fordi GitHub Pages ikke kan sende headere: `default-src 'self'; connect-src https://api.entur.io; style-src 'self' 'unsafe-inline'; img-src 'self' data:`. Den legges bare inn ved bygg, fordi den ellers ville blokkert Vite sin hot reload under utvikling.
+- I GitHub Actions har bare `deploy`-jobben tilgang til å publisere til Pages. `build`-jobben, som også kjører på pull requests, har bare lesetilgang.
+- Se `SECURITY-REVIEW.md` for gjennomgangen 2026-10-06.
+
 ## Tester
 
 Enhetstester med Vitest for:

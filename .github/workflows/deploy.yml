@@ -8,11 +8,10 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
+# Per branch, so a pull request run cannot cancel a deploy from main.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -36,6 +35,10 @@ jobs:
     needs: build
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    # Only the deploy job, which never runs pull request code, can publish to Pages.
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

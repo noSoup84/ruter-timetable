@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import AddRows from '../components/AddRows.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
-import { LIMITS, clearConfig, encodeConfig, validSetting, type BoardRow } from '../lib/config'
+import { LIMITS, MAX_ROWS, MAX_TEXT_LENGTH, clearConfig, encodeConfig, validSetting, type BoardRow } from '../lib/config'
 
 const router = useRouter()
 const config = useConfig()
@@ -150,13 +150,14 @@ function reset() {
           </button>
           <LineBadge :mode="row.transportMode" :public-code="row.publicCode" :colours="null" />
           <div class="details">
-            <input v-model="row.name" type="text" aria-label="Navn" />
+            <input v-model="row.name" type="text" :maxlength="MAX_TEXT_LENGTH" aria-label="Navn" />
             <span class="hint">Fra {{ row.stopName }}</span>
           </div>
           <button aria-label="Slett" @click="remove(row)">Slett</button>
         </li>
       </TransitionGroup>
       <AddRows v-if="adding" :existing="config.rows" @add="add" @cancel="adding = false" />
+      <p v-else-if="config.rows.length >= MAX_ROWS" class="hint">Du har nådd grensen på {{ MAX_ROWS }} avganger.</p>
       <button v-else class="primary" @click="adding = true">Legg til avganger</button>
     </section>
 

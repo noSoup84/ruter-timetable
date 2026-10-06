@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  MAX_ROWS,
+  MAX_TEXT_LENGTH,
   STORAGE_KEY,
   clearConfig,
   decodeConfig,
@@ -54,6 +56,15 @@ describe('parseConfig', () => {
     expect(parseConfig({ ...config, rows: [{ ...config.rows[0], transportMode: 'air' }] })).toBeNull()
     expect(parseConfig({ ...config, rows: [{ id: 'a' }] })).toBeNull()
     expect(parseConfig('nonsense')).toBeNull()
+  })
+
+  it('rejects configs with too many rows or too long text', () => {
+    const row = config.rows[0]
+    const rows = (count: number) => Array.from({ length: count }, (_, i) => ({ ...row, id: String(i) }))
+    expect(parseConfig({ ...config, rows: rows(MAX_ROWS) })).not.toBeNull()
+    expect(parseConfig({ ...config, rows: rows(MAX_ROWS + 1) })).toBeNull()
+    expect(parseConfig({ ...config, rows: [{ ...row, name: 'x'.repeat(MAX_TEXT_LENGTH) }] })).not.toBeNull()
+    expect(parseConfig({ ...config, rows: [{ ...row, name: 'x'.repeat(MAX_TEXT_LENGTH + 1) }] })).toBeNull()
   })
 
   it('uses defaults for missing or invalid auto reload settings', () => {

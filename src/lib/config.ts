@@ -28,6 +28,13 @@ export const LIMITS = {
 
 export const STORAGE_KEY = 'ruter-timetable:config'
 
+/**
+ * Limits for imported and stored configs. A crafted import link could
+ * otherwise make the board send a huge query to Entur every 30 seconds.
+ */
+export const MAX_ROWS = 50
+export const MAX_TEXT_LENGTH = 200
+
 const TRANSPORT_MODES: TransportMode[] = ['bus', 'tram', 'metro', 'rail', 'water']
 
 export function defaultConfig(): AppConfig {
@@ -54,7 +61,7 @@ function parseRow(value: unknown): BoardRow | null {
   if (!isRecord(value)) return null
   const { id, name, transportMode, lineId, publicCode, quayId, stopName } = value
   const strings = [id, name, lineId, publicCode, quayId, stopName]
-  if (!strings.every((s) => typeof s === 'string')) return null
+  if (!strings.every((s) => typeof s === 'string' && s.length <= MAX_TEXT_LENGTH)) return null
   if (!TRANSPORT_MODES.includes(transportMode as TransportMode)) return null
   return {
     id: id as string,
@@ -70,6 +77,7 @@ function parseRow(value: unknown): BoardRow | null {
 /** Validates unknown data as a config. Returns null if it is not a valid version 1 config. */
 export function parseConfig(value: unknown): AppConfig | null {
   if (!isRecord(value) || value.version !== 1 || !Array.isArray(value.rows)) return null
+  if (value.rows.length > MAX_ROWS) return null
 
   const rows = value.rows.map(parseRow)
   if (rows.some((row) => row === null)) return null

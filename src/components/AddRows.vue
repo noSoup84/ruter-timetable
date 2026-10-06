@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useConfig } from '../composables/useConfig'
 import { usePosition } from '../composables/usePosition'
-import type { BoardRow, TransportMode } from '../lib/config'
+import { MAX_ROWS, type BoardRow, type TransportMode } from '../lib/config'
 import {
   fetchDirections,
   fetchNearbyStops,
@@ -46,6 +46,7 @@ const results = ref<StopOption[]>([])
 
 const keyOf = (d: { quayId: string; lineId: string }) => `${d.quayId}|${d.lineId}`
 const existingKeys = computed(() => new Set(props.existing.map(keyOf)))
+const roomLeft = computed(() => MAX_ROWS - props.existing.length)
 
 onMounted(async () => {
   const choice = await position.detectChoice()
@@ -137,7 +138,8 @@ function toggle(stop: StopOption, direction: DirectionOption) {
   const key = keyOf(direction)
   const next = new Map(selected.value)
   if (next.has(key)) next.delete(key)
-  else next.set(key, { stop, direction })
+  else if (next.size < roomLeft.value) next.set(key, { stop, direction })
+  else return
   selected.value = next
 }
 
@@ -213,7 +215,7 @@ function formatDistance(meters: number): string {
                 <input
                   type="checkbox"
                   :checked="existingKeys.has(keyOf(direction)) || selected.has(keyOf(direction))"
-                  :disabled="existingKeys.has(keyOf(direction))"
+                  :disabled="existingKeys.has(keyOf(direction)) || (!selected.has(keyOf(direction)) && selected.size >= roomLeft)"
                   @change="toggle(group.stop, direction)"
                 />
                 <LineBadge
