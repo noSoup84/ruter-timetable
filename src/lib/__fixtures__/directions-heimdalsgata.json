@@ -1,0 +1,114 @@
+{
+  "stopPlace": {
+    "name": "Heimdalsgata",
+    "quays": [
+      {
+        "id": "NSR:Quay:105119",
+        "publicCode": null,
+        "estimatedCalls": []
+      },
+      {
+        "id": "NSR:Quay:103843",
+        "publicCode": null,
+        "estimatedCalls": []
+      },
+      {
+        "id": "NSR:Quay:105235",
+        "publicCode": null,
+        "estimatedCalls": []
+      },
+      {
+        "id": "NSR:Quay:101839",
+        "publicCode": null,
+        "estimatedCalls": []
+      },
+      {
+        "id": "NSR:Quay:11872",
+        "publicCode": "",
+        "estimatedCalls": []
+      },
+      {
+        "id": "NSR:Quay:11873",
+        "publicCode": "",
+        "estimatedCalls": [
+          {
+            "destinationDisplay": {
+              "frontText": "Jernbanetorget"
+            },
+            "serviceJourney": {
+              "line": {
+                "id": "RUT:Line:92",
+                "publicCode": "92",
+                "transportMode": "bus",
+                "presentation": {
+                  "colour": "E60000",
+                  "textColour": "FFFFFF"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "NSR:Quay:104055",
+        "publicCode": null,
+        "estimatedCalls": [
+          {
+            "destinationDisplay": {
+              "frontText": "Sinsen-Grefsen st."
+            },
+            "serviceJourney": {
+              "line": {
+                "id": "RUT:Line:17",
+                "publicCode": "17",
+                "transportMode": "tram",
+                "presentation": {
+                  "colour": "0B91EF",
+                  "textColour": "FFFFFF"
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "id": "NSR:Quay:104054",
+        "publicCode": null,
+        "estimatedCalls": [
+          {
+            "destinationDisplay": {
+              "frontText": "Gaustadalléen"
+            },
+            "serviceJourney": {
+              "line": {
+                "id": "RUT:Line:17",
+                "publicCode": "17",
+                "transportMode": "tram",
+                "presentation": {
+                  "colour": "0B91EF",
+                  "textColour": "FFFFFF"
+                }
+              }
+            }
+          },
+          {
+            "destinationDisplay": {
+              "frontText": "Jernbanetorget"
+            },
+            "serviceJourney": {
+              "line": {
+                "id": "RUT:Line:17",
+                "publicCode": "17",
+                "transportMode": "tram",
+                "presentation": {
+                  "colour": "0B91EF",
+                  "textColour": "FFFFFF"
+                }
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

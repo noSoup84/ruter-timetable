@@ -72,7 +72,7 @@ GET https://api.entur.io/geocoder/v1/autocomplete?text=kværnerbyen&layers=venue
 
 Svaret er GeoJSON. `properties.id` er stopPlace-ID (`NSR:StopPlace:6552`), og `properties.category` gir type holdeplass (`onstreetBus`, `metroStation` og så videre). Samme `ET-Client-Name`-header gjelder.
 
-Linjer og retninger fra en holdeplass:
+Linjer og retninger fra en holdeplass. Vi henter én avgang per linje og endestasjon for hver plattform den neste uka:
 
 ```graphql
 {
@@ -81,31 +81,43 @@ Linjer og retninger fra en holdeplass:
     quays {
       id
       publicCode
-      journeyPatterns {
-        line {
-          id
-          publicCode
-          transportMode
-          presentation { colour textColour }  # E60000 / FFFFFF for 54
+      estimatedCalls(
+        timeRange: 604800
+        numberOfDepartures: 200
+        numberOfDeparturesPerLineAndDestinationDisplay: 1
+        arrivalDeparture: departures
+      ) {
+        destinationDisplay { frontText }
+        serviceJourney {
+          line {
+            id
+            publicCode
+            transportMode
+            presentation { colour textColour }  # E60000 / FFFFFF for 54
+          }
         }
-        quays { id name }
       }
     }
   }
 }
 ```
 
-Hvert journey pattern er en ordnet liste med plattformer (quays), og siste quay er endestasjonen. En retning er kombinasjonen av quay, linje og endestasjon. Journey patterns der valgt quay er siste stopp, er ankomster og utelates. For 54 på Kværnerbyen er `NSR:Quay:105467` retning Kjelsås stasjon, og `NSR:Quay:105466` er bare ankomst fra Kjelsås.
+En retning er kombinasjonen av plattform (quay) og linje. Vi bruker avganger i stedet for journey patterns, fordi teksten på bussen (`frontText`) kan være en annen enn navnet på siste stopp, for eksempel "Sinsen-Grefsen st." mot "Grefsen stasjon". Linjer som ikke går fra plattformen den neste uka, vises ikke.
 
-Hente avganger, én alias per rad i samme spørring:
+Vi filtrerer ikke på endestasjon. Samme linje har ofte flere endestasjoner i samme retning, for eksempel 17 mot Gaustadalléen og Jernbanetorget fra samme plattform, og begge skal vises.
+
+Hente avganger, med alias per rad i samme spørring. Verdiene sendes som GraphQL-variabler:
 
 ```graphql
-{
-  r0: quay(id: "NSR:Quay:105467") {
+query ($q0: String!, $l0: ID!) {
+  q0: quay(id: $q0) {
+    id
     estimatedCalls(
-      numberOfDepartures: 3
+      numberOfDepartures: 6
       timeRange: 86400
-      whiteListed: { lines: ["RUT:Line:54"] }
+      arrivalDeparture: departures
+      includeCancelledTrips: true
+      whiteListed: { lines: [$l0] }
     ) {
       aimedDepartureTime
       expectedDepartureTime
@@ -115,11 +127,14 @@ Hente avganger, én alias per rad i samme spørring:
       situations { summary { value language } }
     }
   }
-  r1: quay(id: "...") { ... }
+  l0: line(id: $l0) {
+    id
+    presentation { colour textColour }
+  }
 }
 ```
 
-Hvis en rad også er filtrert på endestasjon (se config), henter vi flere enn 3 avganger og filtrerer på `destinationDisplay.frontText` i klienten.
+Vi henter 6 avganger og viser 3, slik at raden fortsatt har 3 avganger når de første går mellom to hentinger.
 
 ## Avgangsvisning (`/`)
 
@@ -180,7 +195,7 @@ Config-siden viser de lagrede radene og lar brukeren opprette, endre, slette og 
 
 ### Liste over rader
 
-- Hver rad viser linjemerke, navn, holdeplass og endestasjon.
+- Hver rad viser linjemerke, navn og holdeplass.
 - Endre navn direkte i listen. Skal linje, holdeplass eller retning endres, lager man en ny rad og sletter den gamle.
 - Slette rad, med bekreftelse.
 - Flytte opp og ned med piler.
@@ -193,11 +208,10 @@ Config-siden viser de lagrede radene og lar brukeren opprette, endre, slette og 
 2. Velg holdeplass.
    - Med posisjon: liste over holdeplasser innen 1 km, sortert på avstand og vist med avstand ("350 m"). Et søkefelt er tilgjengelig over listen hvis holdeplassen ikke er der.
    - Uten posisjon: søkefelt med forslag mens du skriver (Entur Geocoder).
-3. Velg linje og retning. Appen viser alle linjer som går fra holdeplassen, én linje per retning, for eksempel "54 mot Kjelsås stasjon". Øverst er det filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje). Bare transportmidler som finnes på holdeplassen, vises.
-4. Navnet fylles ut automatisk ("54 mot Kjelsås stasjon") og kan endres.
+3. Velg linje og retning. Appen viser én linje per plattform med endestasjonene, for eksempel "54 mot Kjelsås stasjon" eller "17 mot Gaustadalléen, Jernbanetorget". Øverst er det filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje). Bare transportmidler som finnes på holdeplassen, vises.
+4. Navnet fylles ut automatisk med linjenummer og første endestasjon ("54 mot Kjelsås stasjon"), og kan endres.
 5. Lagre. Raden legges nederst i listen.
 
-Hvis samme linje har flere endestasjoner fra samme quay, for eksempel 17 mot både Disen og Grefsen stasjon, vises de som separate valg. Raden lagrer da endestasjonen som filter.
 
 ### Posisjon
 
@@ -232,15 +246,14 @@ Oppsettet lagres i `localStorage` under én nøkkel, med versjonsnummer slik at 
       "lineId": "RUT:Line:54",
       "publicCode": "54",
       "quayId": "NSR:Quay:105467",
-      "stopName": "Kværnerbyen",
-      "destination": null
+      "stopName": "Kværnerbyen"
     }
   ],
   "autoReload": { "enabled": true, "time": "04:00" }
 }
 ```
 
-`publicCode` og `stopName` lagres for å vise config-siden uten API-kall. `destination` er `null` når quay alene bestemmer retningen.
+`publicCode` og `stopName` lagres for å vise config-siden uten API-kall.
 
 Ugyldig eller manglende oppsett gir en tom avgangsvisning med en lenke til config-siden.
 
@@ -250,10 +263,10 @@ Enhetstester med Vitest for:
 
 - Tidsformatet (`nå`, `X min`, `HH:MM`, grensene på 1 og 30 minutter).
 - Forsinkelse og innstilling.
-- Filtrering på endestasjon og fjerning av avganger som har gått.
+- Fjerning av avganger som har gått.
 - Lesing, validering og migrering av oppsett fra `localStorage`.
 - Koding og dekoding av eksportlenken.
-- Utledning av linjer og retninger fra en holdeplass sine journey patterns, inkludert utelating av ankomster.
+- Utledning av linjer og retninger fra avgangene på en holdeplass.
 
 APIet testes ikke direkte. Svar fra Entur lagres som fixtures.
 
@@ -271,4 +284,4 @@ Brukes når `presentation.colour` mangler. Verdiene er Ruters farger slik de er 
 
 ## Linje eller holdeplass som er borte
 
-Hvis Entur ikke returnerer quayen for en rad, eller linjen ikke lenger har journey patterns fra quayen, viser raden "Finner ikke linjen" i svak farge og en lenke til config-siden. Vi skiller ikke dette fra "Ingen avganger" ved vanlige svar uten avganger, bare når quayen eller linjen mangler i svaret.
+Hvis Entur returnerer `null` for quayen eller linjen til en rad, viser raden "Finner ikke linjen" i svak farge og en lenke til config-siden. Et vanlig svar uten avganger gir fortsatt "Ingen avganger".
