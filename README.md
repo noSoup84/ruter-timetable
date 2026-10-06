@@ -9,7 +9,7 @@ npm test        # unit tests
 npm run build   # builds to dist/
 ```
 
-A push to `main` runs the tests and deploys to GitHub Pages at https://nosoup84.github.io/ruter-timetable/. In the repository, Settings > Pages > Source must be set to "GitHub Actions".
+A push to `main` runs the tests and deploys to GitHub Pages. The original runs at https://nosoup84.github.io/ruter-timetable/. In the repository, Settings > Pages > Source must be set to "GitHub Actions".
 
 ## Entur client name
 

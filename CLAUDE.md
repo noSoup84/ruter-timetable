@@ -59,6 +59,8 @@ Check UI changes in a real browser, not only with tests. Headless Chrome through
 
 ## Git and deploy
 
-- Commits are authored as `noSoup84 <11976727+noSoup84@users.noreply.github.com>`, set in the local git config. Don't use any other identity.
-- The remote is HTTPS with a personal access token from the macOS keychain. The `gh` CLI on this machine is logged in to a different account, and the local git config turns it off for this repository. Leave the push to the user (`git push`). Don't push, and don't change the credential config.
-- A push to `main` deploys to https://nosoup84.github.io/ruter-timetable/. Check the run with `curl https://api.github.com/repos/noSoup84/ruter-timetable/actions/runs?per_page=1`.
+- Commit with the identity in the local git config. Don't change it or set another one.
+- Leave pushing to the user. Don't change remotes or credential config.
+- A push to `main` runs the tests and deploys to GitHub Pages for the repository in `git remote get-url origin`. Check the latest run with `curl https://api.github.com/repos/<owner>/<repo>/actions/runs?per_page=1`.
+
+Personal details for one maintainer's setup, like accounts and URLs, go in `CLAUDE.local.md`, which is git-ignored.

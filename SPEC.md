@@ -37,7 +37,7 @@ The app's interface is in Norwegian. UI text quoted in this document is in Norwe
 All data comes from Entur JourneyPlanner v3:
 
 - Endpoint: `POST https://api.entur.io/journey-planner/v3/graphql`
-- Required header: `ET-Client-Name: <owner>-ruter-timetable`, in lowercase. The name is set at build time with `VITE_ENTUR_CLIENT_NAME` and is not hardcoded, so forks don't use our name and our quota. GitHub Actions uses the repository variable `ENTUR_CLIENT_NAME` if it exists, otherwise `<repo-owner>-ruter-timetable`. For this repository that is `nosoup84-ruter-timetable`. Without the variable, for example locally, `unnamed-ruter-timetable` is used.
+- Required header: `ET-Client-Name: <owner>-ruter-timetable`, in lowercase. The name is set at build time with `VITE_ENTUR_CLIENT_NAME` and is not hardcoded, so forks don't use our name and our quota. GitHub Actions uses the repository variable `ENTUR_CLIENT_NAME` if it exists, otherwise `<repo-owner>-ruter-timetable`. Without the variable, for example locally, `unnamed-ruter-timetable` is used.
 - No key. CORS is open (`Access-Control-Allow-Origin: *`), so the app calls the API directly from the browser.
 - We don't filter on operator. Trains in the Oslo area are run by Vy and others, not Ruter, and they should be included. This also means the app works in the rest of Norway.
 
