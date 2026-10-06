@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import AddRow from '../components/AddRow.vue'
+import AddRows from '../components/AddRows.vue'
 import LineBadge from '../components/LineBadge.vue'
 import { useConfig } from '../composables/useConfig'
 import { encodeConfig, type BoardRow } from '../lib/config'
@@ -10,8 +10,8 @@ const adding = ref(false)
 const exportUrl = ref<string | null>(null)
 const copied = ref(false)
 
-function add(row: BoardRow) {
-  config.value.rows.push(row)
+function add(rows: BoardRow[]) {
+  config.value.rows.push(...rows)
   adding.value = false
 }
 
@@ -69,8 +69,8 @@ function reload() {
           </div>
         </li>
       </ul>
-      <AddRow v-if="adding" @add="add" @cancel="adding = false" />
-      <button v-else class="primary" @click="adding = true">Legg til avgang</button>
+      <AddRows v-if="adding" :existing="config.rows" @add="add" @cancel="adding = false" />
+      <button v-else class="primary" @click="adding = true">Legg til avganger</button>
     </section>
 
     <section>

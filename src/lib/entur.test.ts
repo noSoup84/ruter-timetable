@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { BoardRow } from './config'
-import { buildDeparturesQuery, parseDepartures, parseDirections, toTransportMode, type RawStopPlace } from './entur'
+import {
+  buildDeparturesQuery,
+  buildDirectionsQuery,
+  parseDepartures,
+  parseDirections,
+  toTransportMode,
+  type RawStopPlace,
+} from './entur'
 import directionsFixture from './__fixtures__/directions-heimdalsgata.json'
 
 const row = (id: string, quayId: string, lineId: string): BoardRow => ({
@@ -81,7 +88,7 @@ describe('parseDepartures', () => {
 
 describe('parseDirections', () => {
   it('groups departures into one option per quay and line, with all destinations', () => {
-    const options = parseDirections(directionsFixture as RawStopPlace)
+    const options = parseDirections(directionsFixture.stopPlace as RawStopPlace)
     const summary = options.map((o) => `${o.quayId} ${o.publicCode}: ${o.destinations.join(', ')}`)
 
     expect(summary).toContain('NSR:Quay:104054 17: Gaustadalléen, Jernbanetorget')
@@ -91,13 +98,22 @@ describe('parseDirections', () => {
   })
 
   it('sorts lines by number', () => {
-    const options = parseDirections(directionsFixture as RawStopPlace)
+    const options = parseDirections(directionsFixture.stopPlace as RawStopPlace)
     const codes = options.map((o) => o.publicCode)
     expect(codes).toEqual([...codes].sort((a, b) => a.localeCompare(b, 'nb', { numeric: true })))
   })
 
   it('returns no options when the stop does not exist', () => {
-    expect(parseDirections({ stopPlace: null })).toEqual([])
+    expect(parseDirections(null)).toEqual([])
+  })
+})
+
+describe('buildDirectionsQuery', () => {
+  it('fetches all stops in one query, with IDs as variables', () => {
+    const { query, variables } = buildDirectionsQuery(['NSR:StopPlace:6552', 'NSR:StopPlace:58253'])
+    expect(variables).toEqual({ s0: 'NSR:StopPlace:6552', s1: 'NSR:StopPlace:58253' })
+    expect(query).toContain('s1: stopPlace(id: $s1) { ...StopDirections }')
+    expect(query).toContain('fragment StopDirections on StopPlace')
   })
 })
 

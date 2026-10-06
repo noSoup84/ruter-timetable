@@ -221,31 +221,39 @@ export async function searchStops(text: string, signal?: AbortSignal): Promise<S
 
 // Directions
 
-const DIRECTIONS_QUERY = `query ($id: String!) {
-  stopPlace(id: $id) {
-    name
-    quays {
-      id
-      publicCode
-      estimatedCalls(
-        timeRange: 604800
-        numberOfDepartures: 200
-        numberOfDeparturesPerLineAndDestinationDisplay: 1
-        arrivalDeparture: departures
-      ) {
-        destinationDisplay { frontText }
-        serviceJourney {
-          line {
-            id
-            publicCode
-            transportMode
-            presentation { colour textColour }
-          }
+const STOP_DIRECTIONS_FRAGMENT = `fragment StopDirections on StopPlace {
+  quays {
+    id
+    publicCode
+    estimatedCalls(
+      timeRange: 604800
+      numberOfDepartures: 200
+      numberOfDeparturesPerLineAndDestinationDisplay: 1
+      arrivalDeparture: departures
+    ) {
+      destinationDisplay { frontText }
+      serviceJourney {
+        line {
+          id
+          publicCode
+          transportMode
+          presentation { colour textColour }
         }
       }
     }
   }
 }`
+
+/** Builds one query that fetches directions for many stops, with one alias per stop. */
+export function buildDirectionsQuery(stopPlaceIds: string[]): { query: string; variables: Record<string, string> } {
+  const params = stopPlaceIds.map((_, i) => `$s${i}: String!`)
+  const fields = stopPlaceIds.map((_, i) => `  s${i}: stopPlace(id: $s${i}) { ...StopDirections }`)
+  const variables = Object.fromEntries(stopPlaceIds.map((id, i) => [`s${i}`, id]))
+  return {
+    query: `query (${params.join(', ')}) {\n${fields.join('\n')}\n}\n${STOP_DIRECTIONS_FRAGMENT}`,
+    variables,
+  }
+}
 
 interface RawDirectionCall {
   destinationDisplay: { frontText: string | null } | null
@@ -260,17 +268,14 @@ interface RawDirectionCall {
 }
 
 export interface RawStopPlace {
-  stopPlace: {
-    name: string
-    quays: { id: string; publicCode: string | null; estimatedCalls: RawDirectionCall[] }[]
-  } | null
+  quays: { id: string; publicCode: string | null; estimatedCalls: RawDirectionCall[] }[]
 }
 
 /** Groups upcoming departures into one option per quay and line, with all destinations. */
-export function parseDirections(data: RawStopPlace): DirectionOption[] {
+export function parseDirections(stopPlace: RawStopPlace | null): DirectionOption[] {
   const options = new Map<string, DirectionOption>()
 
-  for (const quay of data.stopPlace?.quays ?? []) {
+  for (const quay of stopPlace?.quays ?? []) {
     for (const call of quay.estimatedCalls) {
       const line = call.serviceJourney.line
       const transportMode = toTransportMode(line.transportMode)
@@ -307,6 +312,10 @@ export function parseDirections(data: RawStopPlace): DirectionOption[] {
   )
 }
 
-export async function fetchDirections(stopPlaceId: string): Promise<DirectionOption[]> {
-  return parseDirections(await graphql<RawStopPlace>(DIRECTIONS_QUERY, { id: stopPlaceId }))
+/** Fetches directions for many stops in one request. Returns options per stop place ID. */
+export async function fetchDirections(stopPlaceIds: string[]): Promise<Map<string, DirectionOption[]>> {
+  if (stopPlaceIds.length === 0) return new Map()
+  const { query, variables } = buildDirectionsQuery(stopPlaceIds)
+  const data = await graphql<Record<string, RawStopPlace | null>>(query, variables)
+  return new Map(stopPlaceIds.map((id, i) => [id, parseDirections(data[`s${i}`])]))
 }

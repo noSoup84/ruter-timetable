@@ -199,25 +199,27 @@ Config-siden viser de lagrede radene og lar brukeren opprette, endre, slette og 
 - Endre navn direkte i listen. Skal linje, holdeplass eller retning endres, lager man en ny rad og sletter den gamle.
 - Slette rad, med bekreftelse.
 - Flytte opp og ned med piler.
-- Knapp "Legg til avgang".
+- Knapp "Legg til avganger".
 - Ingen grense på antall rader, men layouten er laget for rundt 3 til 8.
 
-### Legge til en rad
+### Legge til avganger
 
-1. Appen spør om den skal bruke posisjonen din for å vise holdeplasser i nærheten.
-2. Velg holdeplass.
-   - Med posisjon: liste over holdeplasser innen 1 km, sortert på avstand og vist med avstand ("350 m"). Et søkefelt er tilgjengelig over listen hvis holdeplassen ikke er der.
-   - Uten posisjon: søkefelt med forslag mens du skriver (Entur Geocoder).
-3. Velg linje og retning. Appen viser én linje per plattform med endestasjonene, for eksempel "54 mot Kjelsås stasjon" eller "17 mot Gaustadalléen, Jernbanetorget". Øverst er det filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje). Bare transportmidler som finnes på holdeplassen, vises.
-4. Navnet fylles ut automatisk med linjenummer og første endestasjon ("54 mot Kjelsås stasjon"), og kan endres.
-5. Lagre. Raden legges nederst i listen.
+Flere avganger fra flere holdeplasser legges til i én operasjon, ved å krysse av i en liste.
 
+1. Første gang i et besøk spør appen om den skal bruke posisjonen din. Hvis nettleseren allerede har gitt tillatelse, hoppes spørsmålet over.
+2. Med posisjon: appen viser de 10 nærmeste holdeplassene innen 1 km, sortert på avstand. Under hver holdeplass står alle linjer og retninger derfra, med avkrysningsboks. Alt hentes i én spørring mot Entur.
+3. Over listen er det et søkefelt. Et treff i søket legges øverst i listen som en ny holdeplass med sine retninger. Uten posisjon starter listen tom, og søket er eneste vei inn.
+4. Filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje) gjelder hele listen. Bare transportmidler som finnes i listen, vises.
+5. Retninger som allerede er lagt til, er avkrysset, grået ut og merket "Lagt til".
+6. Knappen "Legg til N avganger" lagrer alle avkryssede retninger nederst i listen. Navnet blir linjenummer og første endestasjon ("54 mot Kjelsås stasjon"), og kan endres i listen etterpå.
+
+Eksempel: hjemme ved Kværnerbyen krysser man av 54 fra Kværnerbyen og 70 og 34 i begge retninger fra Kværner, og legger til alle fem med ett trykk.
 
 ### Posisjon
 
-- Posisjon hentes med `navigator.geolocation` bare når brukeren takker ja i steg 1. Avgangsvisningen ber aldri om posisjon.
-- Posisjonen lagres ikke. Den hentes på nytt hver gang en ny rad legges til, slik at forslagene stemmer også når appen settes opp et annet sted.
-- Hvis brukeren sier nei, nettleseren avslår, eller posisjonen ikke kommer innen 10 sekunder, går appen rett til søkefeltet.
+- Posisjon hentes med `navigator.geolocation` bare når brukeren takker ja, eller nettleseren allerede har gitt tillatelse. Avgangsvisningen ber aldri om posisjon.
+- Svaret på spørsmålet og selve posisjonen huskes resten av besøket, slik at man ikke blir spurt på nytt. Ingenting lagres i localStorage, slik at forslagene stemmer når appen settes opp et annet sted.
+- Hvis brukeren sier nei, nettleseren avslår, eller posisjonen ikke kommer innen 10 sekunder, viser appen bare søkefeltet.
 - Geolocation krever HTTPS, noe GitHub Pages har. I Fully Kiosk Browser må posisjonstilgang slås på i appens innstillinger.
 
 ### Andre innstillinger
