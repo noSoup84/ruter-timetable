@@ -38,4 +38,4 @@ Feedback and tasks for the app. New items go under "Open". When an item is done,
 - [x] The GitHub Pages path was hardcoded as `/ruter-timetable/`. It is now set at build time from the repository name, or from the `BASE_PATH` variable. (2026-10-06, 02b725e)
 - [x] README.md, SPEC.md and TODO.md should be in English. (2026-10-06, b2979d7)
 - [x] Add a CLAUDE.md that helps Claude with further development. (2026-10-06, 11c8c52)
-- [x] CLAUDE.md had personal account details that forks would inherit. They are now in a git-ignored CLAUDE.local.md, and CLAUDE.md is generic. (2026-10-06, COMMIT)
+- [x] CLAUDE.md had personal account details that forks would inherit. They are now in a git-ignored CLAUDE.local.md, and CLAUDE.md is generic. (2026-10-06, f1b9caa)
