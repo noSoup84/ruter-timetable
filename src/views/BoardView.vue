@@ -163,6 +163,12 @@ const stale = computed(() => {
   max-height: calc(var(--row-em) * 1.6em);
 }
 
+/* A service alert wraps over several lines, so its row may grow past the cap. */
+.rows > :deep(li:has(.situation)) {
+  flex-shrink: 0;
+  max-height: none;
+}
+
 .empty {
   color: var(--dim);
 }

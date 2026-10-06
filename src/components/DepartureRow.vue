@@ -77,7 +77,13 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
     <div class="name">
       <div class="title">{{ row.name }}</div>
       <div v-if="situation" class="situation">
-        <span class="warning" aria-hidden="true">!</span>{{ text(situation) }}
+        <!-- Warning triangle -->
+        <svg class="warning" viewBox="0 0 24 22" aria-hidden="true">
+          <path d="M10.3 1.6a2 2 0 0 1 3.4 0l9.9 17.1a2 2 0 0 1-1.7 3H2.1a2 2 0 0 1-1.7-3z" fill="#f5c400" />
+          <rect x="10.6" y="7" width="2.8" height="7.5" rx="1.2" fill="#000" />
+          <circle cx="12" cy="17.6" r="1.6" fill="#000" />
+        </svg>
+        <span>{{ text(situation) }}</span>
       </div>
     </div>
     <div class="times" @click.stop="departures.length && toggleClock()">
@@ -207,24 +213,19 @@ onBeforeUnmount(() => clearTimeout(clockTimer))
 }
 
 .situation {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4em;
+  margin-top: 0.15em;
   font-size: 0.55em;
   color: var(--dim);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1.3;
 }
 
 .warning {
-  display: inline-block;
-  width: 1.3em;
-  height: 1.3em;
-  margin-right: 0.4em;
-  border-radius: 50%;
-  background: #f5c400;
-  color: #000;
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.3em;
+  flex: none;
+  width: 1.35em;
+  height: 1.25em;
 }
 
 .times {
