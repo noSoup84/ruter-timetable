@@ -62,7 +62,7 @@ async function loadNearby() {
     groups.value = stops
       .map((stop) => ({ stop, directions: directions.get(stop.id) ?? [] }))
       .filter((g) => g.directions.length > 0)
-    if (groups.value.length === 0) error.value = 'Fant ingen avganger innen 1 km. Søk etter holdeplassen i stedet.'
+    if (groups.value.length === 0) error.value = 'Fant ingen avganger innen 250 m. Søk etter holdeplassen i stedet.'
   } catch {
     error.value = 'Fant ikke posisjonen din. Søk etter holdeplassen i stedet.'
   } finally {

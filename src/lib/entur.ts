@@ -166,7 +166,7 @@ const NEAREST_QUERY = `query ($latitude: Float!, $longitude: Float!) {
   nearest(
     latitude: $latitude
     longitude: $longitude
-    maximumDistance: 1000
+    maximumDistance: 250
     maximumResults: 20
     filterByPlaceTypes: [stopPlace]
     filterByModes: [bus, coach, tram, metro, rail, water]

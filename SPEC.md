@@ -50,7 +50,7 @@ Holdeplasser i nærheten av en posisjon:
   nearest(
     latitude: 59.9045
     longitude: 10.7864
-    maximumDistance: 1000
+    maximumDistance: 250
     filterByPlaceTypes: [stopPlace]
     filterByModes: [bus, tram, metro, rail, water]
   ) {
@@ -207,7 +207,7 @@ Config-siden viser de lagrede radene og lar brukeren opprette, endre, slette og 
 Flere avganger fra flere holdeplasser legges til i én operasjon, ved å krysse av i en liste.
 
 1. Første gang i et besøk spør appen om den skal bruke posisjonen din. Hvis nettleseren allerede har gitt tillatelse, hoppes spørsmålet over.
-2. Med posisjon: appen viser de 10 nærmeste holdeplassene innen 1 km, sortert på avstand. Under hver holdeplass står alle linjer og retninger derfra, med avkrysningsboks. Alt hentes i én spørring mot Entur.
+2. Med posisjon: appen viser de 10 nærmeste holdeplassene innen 250 m, sortert på avstand. Under hver holdeplass står alle linjer og retninger derfra, med avkrysningsboks. Alt hentes i én spørring mot Entur.
 3. Over listen er det et søkefelt. Et treff i søket legges øverst i listen som en ny holdeplass med sine retninger. Uten posisjon starter listen tom, og søket er eneste vei inn.
 4. Filterknapper for transportmiddel (buss, t-bane, trikk, tog, ferje) gjelder hele listen. Bare transportmidler som finnes i listen, vises.
 5. Retninger som allerede er lagt til, er avkrysset, grået ut og merket "Lagt til".
